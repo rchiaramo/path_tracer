@@ -204,7 +204,7 @@ impl PathTracer {
             = GPUCamera::new(&self.render_parameters.camera(), self.render_parameters.get_viewport());
         self.camera_buffer = gpu_camera;
         
-        let (h,w) = self.render_parameters.get_viewport();
+        let (w,h) = self.render_parameters.get_viewport();
         let ar = w as f32 / h as f32;
         let proj_mat = self.render_parameters.camera().projection_transform(ar, 0.1, 100.0);
         let view_mat = self.render_parameters.camera().view_transform();

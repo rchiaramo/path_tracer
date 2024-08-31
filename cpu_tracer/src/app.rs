@@ -4,7 +4,6 @@ use winit::event::{ElementState, KeyEvent, WindowEvent};
 use winit::event_loop::{ActiveEventLoop};
 use winit::keyboard::{KeyCode, PhysicalKey};
 use winit::window::{Window, WindowId};
-use crate::camera::Camera;
 use crate::path_tracer::PathTracer;
 use crate::gui::GUI;
 use crate::query_gpu::{Queries, QueryResults};
