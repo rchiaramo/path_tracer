@@ -21,20 +21,6 @@ impl GPUCamera {
     pub fn new(camera: &Camera, image_size: (u32, u32)) -> GPUCamera {
         let focus_distance = camera.focus_distance;
         let defocus_radius = focus_distance * (0.5 * camera.defocus_angle).to_radians().tan();
-        let theta = camera.vfov.to_radians();
-        let h = (theta / 2.0).tan();
-        let viewport_height: f32 = 2.0 * h * camera.focus_distance;
-        let viewport_width: f32 = viewport_height * (image_size.0 as f32 / image_size.1 as f32);
-
-        let viewport_u = viewport_width * camera.right;
-        let viewport_v = -viewport_height * camera.up;
-
-        let du = viewport_u / image_size.0 as f32;
-        let dv = viewport_v / image_size.1 as f32;
-
-        let upper_left = camera.position + camera.focus_distance * camera.forwards -
-            0.5 * (viewport_u + viewport_v);
-        let pixel_00 = upper_left + 0.5 * (du + dv);
 
         GPUCamera {
             camera_position: camera.position.extend(0.0),

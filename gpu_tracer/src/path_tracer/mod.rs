@@ -67,7 +67,7 @@ impl PathTracer {
         });
         
         // create the scene and the bvh_tree that corresponds to it
-        let mut scene = Scene::book_one_final();
+        let mut scene = Scene::new();
         let mut bvh_tree= BVHTree::new(scene.spheres.len());
         bvh_tree.build_bvh_tree(&mut scene.spheres);
         
@@ -105,7 +105,7 @@ impl PathTracer {
         // let lookAt = Vec3::new(0.0, 0.0, -1.0);
         // let lookFrom = Vec3::new(-2.0, 2.0, 1.0);
         // let camera = Camera::new(lookAt, lookFrom, 90.0, 0.0,3.4);
-        let camera = Camera::book_one_final_camera();
+        let camera = Camera::default();
         let gpu_camera = GPUCamera::new(&camera, window_size);
         let camera_buffer = GPUBuffer::new_from_bytes(device,
                                                       BufferUsages::UNIFORM,
@@ -319,7 +319,7 @@ impl PathTracer {
         let gpu_camera
             = GPUCamera::new(&self.render_parameters.camera(), self.render_parameters.get_viewport());
         self.camera_buffer.queue_for_gpu(queue, bytemuck::cast_slice(&[gpu_camera]));
-        let (h,w) = self.render_parameters.get_viewport();
+        let (w,h) = self.render_parameters.get_viewport();
         let ar = w as f32 / h as f32;
         let proj_mat = self.render_parameters.camera().projection_transform(ar, 0.1, 100.0);
         let view_mat = self.render_parameters.camera().view_transform();
