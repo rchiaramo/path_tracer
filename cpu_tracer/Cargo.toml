@@ -1,19 +1,18 @@
 [package]
 name = "cpu_tracer"
-version = "0.1.0"
-edition = "2021"
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
 
 [dependencies]
-winit = "0.30.4"
-wgpu = "22.0.0"
-env_logger = "0.11.4"
-log = "0.4.22"
-pollster = "0.3.0"
-bytemuck = { version = "1.16.1", features = ["derive"] }
-glam = "0.28.0"
-rand = "0.9.0-alpha.1"
-image = "0.25.2"
-rayon = "1.10.0"
-imgui = { path = "../../other_peoples_code/imgui-rs/imgui" }
-imgui-wgpu = { path = "../../other_peoples_code/imgui-wgpu-rs"}
-imgui-winit-support = { path = "../../other_peoples_code/imgui-winit-support" }
+winit = { workspace = true }
+env_logger = { workspace = true }
+log = { workspace = true }
+wgpu = { workspace = true }
+pollster = { workspace = true }
+bytemuck = { workspace = true }
+glam = { workspace = true }
+rand = { workspace = true }
+imgui = { workspace = true }
+imgui-wgpu = { workspace = true }
+imgui-winit-support = { workspace = true }
