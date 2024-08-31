@@ -66,7 +66,6 @@ impl Camera {
                             z_far: f32) -> [[f32;4];4] {
 
         let v_fov = self.vfov.to_radians();
-        // using similar triangles, h = cos / sin = 1/tan when focal_length is 1
         let h = 1.0 / (v_fov / 2.0).tan();
         let w = h / aspect_ratio;
         let r = z_far / (z_far - z_near);
@@ -77,12 +76,6 @@ impl Camera {
         //     Vec4::new(0.0, 0.0, -r * z_near, 0.0)
         // );
 
-        // let p_inv = Mat4::from_cols(
-        //     Vec4::new(1.0/w, 0.0, 0.0, 0.0),
-        //     Vec4::new(0.0, 1.0/h, 0.0, 0.0),
-        //     Vec4::new(0.0, 0.0, 0.0, -1.0 / (r * z_near)),
-        //     Vec4::new(0.0, 0.0, 1.0, 1.0 / z_near)
-        // );
         let p_inv = [
             [1.0 / w, 0.0, 0.0, 0.0],
             [0.0, 1.0 / h, 0.0, 0.0],
@@ -90,9 +83,6 @@ impl Camera {
             [0.0, 0.0, 1.0, 1.0 / z_near]
         ];
 
-        // Transform { m: p, m_inv: p_inv }
-        // Transform { m: Mat4::perspective_lh(v_fov_deg.to_radians(), aspect_ratio, z_near, z_far),
-        // m_inv: Mat4::perspective_lh(v_fov_deg.to_radians(), aspect_ratio, z_near, z_far).inverse() }
         p_inv
     }
 
@@ -104,18 +94,13 @@ impl Camera {
         let right = self.right;
         let new_up = self.up;
         let center = self.position;
-        // let world_from_camera = Mat4::from_cols(
-        //     -right.extend(0.0),
-        //     new_up.extend(0.0),
-        //     dir.extend(0.0),
-        //     center.extend(1.0));
+
         let world_from_camera = [
             [right.x, right.y, right.z, 0.0],
             [new_up.x, new_up.y, new_up.z, 0.0],
             [dir.x, dir.y, dir.z, 0.0],
             [center.x, center.y, center.z, 1.0]
         ];
-
 
         // if wfc is of form T*R, then inv is inv(T)*inv(T), which is why we have the dot
         // product now in the fourth column
