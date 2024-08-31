@@ -13,6 +13,7 @@ come back as zeros; second, the wait for result seems to mess up the winit loop 
 I try to resize.
 
 Progress:
+- updated cpu version of tracer for debugging purposes and added it to workgroup
 - added imgui; local imgui files that I modified at this point
 - runs samples/frame until total samples/pixel is complete; shows progress in gui
 - changed ray tracing generation algorithm from RTiOW to projection and view matrix based
