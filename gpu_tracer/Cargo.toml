@@ -1,0 +1,17 @@
+[package]
+name = "gpu_tracer"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+winit = "0.30.5"
+env_logger = "0.11.5"
+log = "0.4.22"
+wgpu = "22.1.0"
+pollster = "0.3.0"
+bytemuck = { version = "1.17.0", features = ["derive"] }
+glam = "0.29.0"
+rand = "0.9.0-alpha.2"
+imgui = { path = "../../other_peoples_code/imgui-rs/imgui" }
+imgui-wgpu = { path = "../../other_peoples_code/imgui-wgpu-rs"}
+imgui-winit-support = { path = "../../other_peoples_code/imgui-winit-support" }
