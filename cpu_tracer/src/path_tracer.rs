@@ -115,7 +115,7 @@ impl PathTracer {
                                                 max_window_size);
 
         let shader = device.create_shader_module(
-            wgpu::include_wgsl!("screen_shader.wgsl")
+            wgpu::include_wgsl!("../../common_code/shaders/display_shader.wgsl")
         );
 
         let display_pipeline_layout =

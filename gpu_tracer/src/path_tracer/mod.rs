@@ -171,7 +171,7 @@ impl PathTracer {
         );
 
         let shader = device.create_shader_module(
-            wgpu::include_wgsl!("../shaders/raytracer_kernel.wgsl")
+            wgpu::include_wgsl!("../shaders/compute_megakernel.wgsl")
         );
         
         // if I want to pass in override values, I can do it here:
@@ -217,7 +217,7 @@ impl PathTracer {
         );
 
         let shader = device.create_shader_module(
-            wgpu::include_wgsl!("../shaders/screen_shader.wgsl")
+            wgpu::include_wgsl!("../../../common_code/shaders/display_shader.wgsl")
         );
 
         let display_pipeline_layout =
