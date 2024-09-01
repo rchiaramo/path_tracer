@@ -12,8 +12,6 @@ use common_code::projection_matrix;
 use common_code::parameters;
 use common_code::bvh;
 use common_code::gui;
-use common_code::camera;
 use common_code::gpu_buffer;
 use common_code::scene;
-use common_code::setup;
 

@@ -10,4 +10,3 @@ pub mod parameters;
 pub mod gui;
 pub mod gpu_structs;
 pub mod camera_controller;
-pub mod setup;

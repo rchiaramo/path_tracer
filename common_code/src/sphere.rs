@@ -23,4 +23,8 @@ impl Sphere {
         let aabb_max = self.center.xyz() + Vec3::splat(self.radius);
         (aabb_min, aabb_max)
     }
+
+    pub fn center (&self) -> Vec4 { self.center }
+    pub fn radius (&self) -> f32 { self.radius }
+    pub fn material_idx(&self) -> u32 { self.material_idx }
 }

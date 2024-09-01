@@ -34,4 +34,20 @@ impl Material {
     pub fn Dielectric(refract_index: f32) -> Self {
         Self { albedo: Vec4::ONE, fuzz:0.0, refract_index, material_type: 2, _buffer: 0 }
     }
+
+    pub fn albedo(&self) -> Vec4 {
+        self.albedo
+    }
+
+    pub fn fuzz(&self) -> f32 {
+        self.fuzz
+    }
+
+    pub fn refract_index(&self) -> f32 {
+        self.refract_index
+    }
+
+    pub fn material_type(&self) -> u32 {
+        self.material_type
+    }
 }

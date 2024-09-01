@@ -1,35 +1,26 @@
 use crate::camera::Camera;
-use crate::gpu_structs::{GPUFrameBuffer, GPUSamplingParameters};
+use crate::gpu_structs::GPUFrameBuffer;
 
 #[derive(Copy, Clone, PartialEq)]
 pub struct SamplingParameters {
     pub samples_per_frame: u32,
     pub num_bounces: u32,
     pub clear_image_buffer: u32,
-}
-
-impl Default for SamplingParameters {
-    fn default() -> Self {
-
-        Self {
-            samples_per_frame: 5_u32,
-            num_bounces: 50_u32,
-            clear_image_buffer: 0_u32,
-        }
-    }
+    pub samples_per_pixel: u32
 }
 
 impl SamplingParameters {
-    pub fn new(samples_per_frame: u32, num_bounces: u32, clear_image_buffer: u32) -> Self {
+    pub fn new(samples_per_frame: u32, num_bounces: u32, clear_image_buffer: u32, samples_per_pixel: u32) -> Self {
         Self {
             samples_per_frame,
             num_bounces,
-            clear_image_buffer
+            clear_image_buffer,
+            samples_per_pixel
         }
     }
 }
 
-#[derive(Copy, Clone, Default, PartialEq)]
+#[derive(Copy, Clone, PartialEq)]
 pub struct RenderParameters {
     camera: Camera,
     sampling_parameters: SamplingParameters,
@@ -67,16 +58,6 @@ pub struct RenderProgress {
     accumulated_samples: u32,
 }
 
-impl Default for RenderProgress {
-    fn default() -> Self {
-        Self {
-            frame: 0,
-            samples_per_pixel: 1000,
-            accumulated_samples: 0
-        }
-    }
-}
-
 impl RenderProgress {
     pub fn new(spp: u32) -> Self {
         Self {
@@ -88,6 +69,10 @@ impl RenderProgress {
 
     pub fn reset(&mut self) {
         self.accumulated_samples = 0;
+    }
+
+    pub fn get(&self, width: u32, height: u32) -> GPUFrameBuffer {
+        GPUFrameBuffer::new(width, height, self.frame, self.accumulated_samples)
     }
 
     pub fn get_next_frame(&mut self, rp: &mut RenderParameters) -> GPUFrameBuffer {
@@ -103,7 +88,8 @@ impl RenderProgress {
             rp.sampling_parameters = SamplingParameters::new(
                 rp.sampling_parameters.samples_per_frame,
                 rp.sampling_parameters.num_bounces,
-                1
+                1,
+                rp.sampling_parameters.samples_per_pixel
             );
             frame = 1;
             self.frame = 1;
@@ -113,7 +99,8 @@ impl RenderProgress {
             rp.sampling_parameters = SamplingParameters::new(
               0,
               rp.sampling_parameters.num_bounces,
-              0
+              0,
+              rp.sampling_parameters.samples_per_pixel
             );
             self.frame += 1;
             frame = self.frame;
@@ -122,7 +109,8 @@ impl RenderProgress {
             rp.sampling_parameters = SamplingParameters::new(
               rp.sampling_parameters.samples_per_frame,
               rp.sampling_parameters.num_bounces,
-              0
+              0,
+              rp.sampling_parameters.samples_per_pixel
             );
             self.frame += 1;
             frame = self.frame;

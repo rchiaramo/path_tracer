@@ -30,6 +30,10 @@ impl GPUCamera {
             focus_distance,
         }
     }
+
+    pub fn position(&self) -> Vec4 { self.camera_position }
+    pub fn defocus_radius(&self) -> f32 { self.defocus_radius }
+    pub fn focus_distance(&self) -> f32 { self.focus_distance }
 }
 
 #[repr(C)]
@@ -54,6 +58,9 @@ impl GPUSamplingParameters {
             _buffer: 0u32
         }
     }
+    pub fn spf(&self) -> u32 { self. samples_per_frame}
+    pub fn num_bounces(&self) -> u32 { self.num_bounces }
+    pub fn clear_image(&self) -> u32 { self.clear_image_buffer }
 }
 
 #[repr(C)]
@@ -73,5 +80,8 @@ impl GPUFrameBuffer {
             frame,
             accumulated_samples
         }
+    }
+    pub fn into_array(&self) -> [u32; 4] {
+        [self.width, self.height, self.frame, self.accumulated_samples]
     }
 }
