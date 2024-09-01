@@ -5,7 +5,6 @@ use crate::material::Material;
 use crate::sphere::Sphere;
 use common_code::gpu_structs::GPUFrameBuffer;
 use glam::{Mat4, UVec2, UVec3, Vec2, Vec3, Vec3Swizzles, Vec4, Vec4Swizzles};
-use rand::Rng;
 use wgpu::Queue;
 
 const EPSILON: f32 = 0.001;
@@ -13,7 +12,6 @@ const EPSILON: f32 = 0.001;
 const PI: f32 = 3.1415927;
 const FRAC_1_PI: f32 = 0.31830987;
 const FRAC_PI_2: f32 = 1.5707964;
-const RNG_CPU: bool = false;
 const USE_BVH: bool = true;
 
 pub struct ComputeShader {
@@ -300,12 +298,7 @@ impl ComputeShader {
     }
 
     fn getRay(&mut self, x: u32, y: u32) -> Ray {
-        let mut offset: Vec3;
-        if RNG_CPU {
-            offset = random_in_unit_disc();
-        } else {
-            offset = self.rngState.rngNextVec3InUnitDisk();
-        }
+        let mut offset = self.rngState.rngNextVec3InUnitDisk();
 
         let mut point = Vec2::new((x as f32 + offset.x) / self.frame_buffer[0] as f32, 
                                   1.0 - (y as f32 + offset.y) / self.frame_buffer[1] as f32);
@@ -317,11 +310,8 @@ impl ComputeShader {
         let mut origin = self.camera_data.position().xyz();
 
         if self.camera_data.defocus_radius() > 0.0 {
-            if RNG_CPU {
-                offset = random_in_unit_disc();
-            } else {
-                offset = self.rngState.rngNextVec3InUnitDisk();
-            }
+            offset = self.rngState.rngNextVec3InUnitDisk();
+
             let pLens= (self.camera_data.defocus_radius() * offset).extend(1.0);
             let mut lensOrigin = Mat4::from_cols_array_2d(&self.view_matrix) * pLens;
             lensOrigin = lensOrigin / lensOrigin.w;
@@ -348,12 +338,7 @@ impl ComputeShader {
 
         match mat_type {
             0 => {
-                let randomBounce: Vec3;
-                if RNG_CPU {
-                    randomBounce = random_in_unit_sphere().normalize();
-                } else {
-                    randomBounce = self.rngState.rngNextVec3InUnitSphere().normalize();
-                }
+                let randomBounce= self.rngState.rngNextVec3InUnitSphere().normalize();
 
                 direction = hit.n + randomBounce;
                 if direction.length() < 0.0001 {
@@ -361,12 +346,8 @@ impl ComputeShader {
                 }
             }
             1 => {
-                let randomBounce: Vec3;
-                if RNG_CPU {
-                    randomBounce = random_in_unit_sphere().normalize();
-                } else {
-                    randomBounce = self.rngState.rngNextVec3InUnitSphere().normalize();
-                }
+                let randomBounce= self.rngState.rngNextVec3InUnitSphere().normalize();
+
                 let fuzz: f32 = self.materials[mat_idx as usize].fuzz();
                 direction = self.reflect(inRay.direction, hit.n) + fuzz * randomBounce;
             }
@@ -387,12 +368,8 @@ impl ComputeShader {
 
                 let reflectance: f32 = self.schlick(cosTheta, etaOverEtaPrime);
                 let mut refractDirection = Vec3::ZERO;
-                let cond: f32;
-                if RNG_CPU {
-                    cond = random_f32();
-                } else {
-                    cond = self.rngState.rngNextFloat();
-                }
+                let cond= self.rngState.rngNextFloat();
+
                 if self.refract(uv, norm, etaOverEtaPrime, &mut refractDirection) {
                        if reflectance > cond {
                            direction = self.reflect(uv, norm);
@@ -510,56 +487,4 @@ impl GPURNG {
 
         x
     }
-}
-
-pub fn random_f32() -> f32 {
-    let mut rng = rand::thread_rng();
-    rng.gen::<f32>()
-}
-
-pub fn random_vec3() -> Vec3 {
-    Vec3::new(random_f32(), random_f32(), random_f32())
-}
-
-pub fn random_range_f32(min: f32, max: f32) -> f32 {
-    let mut rng = rand::thread_rng();
-    rng.gen_range(min .. max)
-}
-
-pub fn random_Vec3_range(min: f32, max: f32) -> Vec3 {
-    Vec3::new(random_range_f32(min, max),
-              random_range_f32(min, max),
-              random_range_f32(min, max))
-}
-
-pub fn random_in_unit_sphere() -> Vec3 {
-    let mut p: Vec3;
-    loop {
-        p = random_Vec3_range(-1.0, 1.0);
-        if p.length_squared() < 1.0 {
-            return p;
-        }
-    }
-}
-
-pub fn random_in_unit_disc() -> Vec3 {
-    let mut p: Vec3;
-    loop {
-        p = Vec3::new(random_range_f32(-1.0, 1.0), random_range_f32(-1.0, 1.0), 0.0);
-        if p.length_squared() < 1.0 {
-            return p;
-        }
-    }
-}
-
-pub fn random_unit_vector() -> Vec3 {
-    random_in_unit_sphere().normalize()
-}
-
-pub fn random_on_hemisphere(normal: &Vec3) -> Vec3 {
-    let on_unit_sphere = random_unit_vector();
-    if normal.dot(on_unit_sphere) < 0.0 {
-        return -on_unit_sphere;
-    }
-    on_unit_sphere
 }

@@ -10,13 +10,14 @@ use gpu_tracer::App;
 fn main() -> Result<(), EventLoopError> {
     env_logger::init();
 
-    let scene = Scene::new();
-    let camera = Camera::new(Vec3::new(0.0, 0.0, 1.0),
-                             Vec3::new(0.0, 0.0, -1.0));
+    let scene = Scene::book_one_final();
+    // let camera = Camera::new(Vec3::new(0.0, 0.0, 1.0),
+    //                          Vec3::new(0.0, 0.0, -1.0));
+    let camera = Camera::book_one_final_camera();
     let camera_controller
-        = CameraController::new(90.0,
-                                0.0,
-                                3.4,
+        = CameraController::new(20.0,
+                                0.6,
+                                10.0,
                                 0.1,
                                 100.0,
                                 4.0,
@@ -25,7 +26,7 @@ fn main() -> Result<(), EventLoopError> {
     let sampling_parameters = SamplingParameters::new(1,
                                                       50,
                                                       1,
-                                                      250);
+                                                      500);
     let render_parameters
         = RenderParameters::new(camera, sampling_parameters, screen_size);
     

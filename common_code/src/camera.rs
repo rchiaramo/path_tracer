@@ -14,8 +14,7 @@ impl Camera {
         let forwards = (look_at - position).normalize();
 
         let pitch = forwards.y.acos();
-        let sin_pitch = pitch.sin();
-        let yaw = (forwards.z / sin_pitch).acos();
+        let yaw = forwards.x.atan2(forwards.z);
 
         Self {
             position,
@@ -27,7 +26,7 @@ impl Camera {
     pub fn book_one_final_camera() -> Self {
         let look_at = Vec3::new(0.0, 0.0, 0.0);
         let look_from = Vec3::new(13.0, 2.0, 3.0);
-        Self::new(look_at, look_from)
+        Self::new(look_from, look_at)
     }
 
     pub fn get_camera(&self) -> (Vec3, f32, f32) {
@@ -62,5 +61,22 @@ impl Camera {
         // );
 
         world_from_camera
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn angles() {
+        let look_from = Vec3::new(13.0, 2.0, 3.0);
+        let look_at = Vec3::new(0.0, 0.0, 0.0);
+        let camera = Camera::new(look_from, look_at);
+        println!("pitch: {}, yaw:{}",camera.pitch.to_degrees(), camera.yaw.to_degrees());
+        let (sin_pitch, cos_pitch) = camera.pitch.sin_cos();
+        let (sin_yaw, cos_yaw) = camera.yaw.sin_cos();
+        let dir = Vec3::new(sin_pitch * sin_yaw, cos_pitch, sin_pitch * cos_yaw);
+        println!("direction: {}", dir);
     }
 }
