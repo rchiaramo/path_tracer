@@ -1,20 +1,17 @@
-use std::time::Instant;
+use crate::bvh::BVHNode;
+use crate::gpu_buffer::GPUBuffer;
+use crate::gpu_structs::{GPUCamera, GPUSamplingParameters};
 use crate::material::Material;
 use crate::sphere::Sphere;
+use common_code::gpu_structs::GPUFrameBuffer;
 use glam::{Mat4, UVec2, UVec3, Vec2, Vec3, Vec3Swizzles, Vec4, Vec4Swizzles};
-use rand::Rng;
 use wgpu::Queue;
-use crate::bvh_node::{BVHNode};
-use crate::gpu_buffer::GPUBuffer;
-use crate::gpu_structs::{GPUCamera};
-use crate::parameters::SamplingParameters;
 
 const EPSILON: f32 = 0.001;
 
 const PI: f32 = 3.1415927;
 const FRAC_1_PI: f32 = 0.31830987;
 const FRAC_PI_2: f32 = 1.5707964;
-const RNG_CPU: bool = true;
 const USE_BVH: bool = true;
 
 pub struct ComputeShader {
@@ -22,7 +19,7 @@ pub struct ComputeShader {
     materials: Vec<Material>,
     bvh_tree: Vec<BVHNode>,
     camera_data: GPUCamera,
-    sampling_parameters: SamplingParameters,
+    sampling_parameters: GPUSamplingParameters,
     inv_proj_matrix: [[f32;4];4],
     view_matrix: [[f32;4];4],
     frame_buffer: [u32;4],
@@ -54,11 +51,11 @@ impl ComputeShader {
                camera_data: GPUCamera,
                inv_proj_matrix: [[f32;4];4],
                view_matrix: [[f32;4];4],
-               sampling_parameters: SamplingParameters,
+               sampling_parameters: GPUSamplingParameters,
+               frame_buffer: GPUFrameBuffer,
                max_size: u32) -> Self {
 
         let pixels = vec![[0.0f32; 3]; max_size as usize];
-       
         Self { 
             spheres,
             materials,
@@ -67,14 +64,34 @@ impl ComputeShader {
             sampling_parameters,
             inv_proj_matrix,
             view_matrix,
-            frame_buffer: [0u32;4],
+            frame_buffer: frame_buffer.into_array(),
             pixels,
             rngState: GPURNG::default(),
         }
     }
 
-    pub fn run_render(&mut self, queue: &Queue, size: (u32, u32), frame: [u32;4], image_buffer: &mut GPUBuffer) {
-        self.frame_buffer = frame;
+    pub fn queue_camera(&mut self, gpucamera: GPUCamera) {
+        self.camera_data = gpucamera;
+    }
+
+    pub fn queue_proj(&mut self, proj_mat: [[f32;4];4]) {
+        self.inv_proj_matrix = proj_mat;
+    }
+
+    pub fn queue_view(&mut self, view_mat: [[f32;4];4]) {
+        self.view_matrix = view_mat;
+    }
+
+    pub fn queue_sampling(&mut self, sampling_parameters: GPUSamplingParameters) {
+        self.sampling_parameters = sampling_parameters
+    }
+
+    pub fn queue_frame(&mut self, frame: GPUFrameBuffer) {
+        self.frame_buffer = frame.into_array();
+    }
+
+
+    pub fn run_render(&mut self, queue: &Queue, size: (u32, u32), image_buffer: &mut GPUBuffer) {
         for y in 0..size.1 {
             for x in 0..size.0 {
                 let id = UVec3::new(x, y, 0);
@@ -92,24 +109,18 @@ impl ComputeShader {
         self.rngState = GPURNG::initRng(screen_pos, image_size, self.frame_buffer[2]);
         
         // if the accumulator = 0, zero out the image buffer
-        if self.sampling_parameters.clear_image_buffer == 1 {
+        if self.sampling_parameters.clear_image() == 1 {
             self.pixels[idx] = [0f32; 3];
         }
         let mut pixel_color = Vec3::from_array(self.pixels[idx]);
 
-        for _i in 0..self.sampling_parameters.samples_per_frame {
-            // let ray = self.getRayOld(self.camera_data.pixel_00.xyz(),
-            //                       id.x,
-            //                       id.y,
-            //                       self.camera_data.du.xyz(),
-            //                       self.camera_data.dv.xyz());
+        for _i in 0..self.sampling_parameters.spf() {
             let ray = self.getRay(id.x, id.y);
             pixel_color += self.rayColor(ray);
         }
         
         self.pixels[idx] = pixel_color.to_array();
     }
-
 
     fn rayColor(&mut self, primaryRay: Ray) -> Vec3 {
         // for every ray, we want to trace the ray through num_bounces
@@ -118,15 +129,15 @@ impl ComputeShader {
         let mut nextRay = primaryRay.clone();
         let mut throughput = Vec3::ONE;
         let mut pixel_color = Vec3::ZERO;
-        for _i in 0 .. self.sampling_parameters.num_bounces {
+        for _i in 0 .. self.sampling_parameters.num_bounces() {
             let mut payLoad = HitPayload::default();
 
             if self.TraceRay(nextRay, &mut payLoad) {
                 // depending on what kind of material, I need to find the scatter ray and the attenuation
-                let mat_idx:u32 = self.spheres[payLoad.idx as usize].material_idx;
+                let mat_idx:u32 = self.spheres[payLoad.idx as usize].material_idx();
                 nextRay = self.getScatterRay(nextRay, mat_idx, payLoad);
 
-                throughput *= self.materials[mat_idx as usize].albedo.xyz();
+                throughput *= self.materials[mat_idx as usize].albedo().xyz();
             } else {
                 let a: f32 = 0.5 * (primaryRay.direction.y + 1.0);
                 pixel_color = throughput * ((1.0 - a) * Vec3::ONE + a * Vec3::new(0.5, 0.7, 1.0));
@@ -254,7 +265,7 @@ impl ComputeShader {
         let a: f32 = ray.direction.dot(ray.direction);
         let b: f32 = ray.direction.dot(ray.origin - sphere_center);
         let c: f32 = (ray.origin - sphere_center).dot(ray.origin - sphere_center) -
-            sphere.radius * sphere.radius;
+            sphere.radius() * sphere.radius();
         let discrim: f32 = b * b - a * c;
 
 
@@ -286,38 +297,8 @@ impl ComputeShader {
         return HitPayload {t, p, n, idx}
     }
 
-    // fn getRayOld(&mut self, pixel_00: Vec3, x: u32, y: u32, du: Vec3, dv: Vec3) -> Ray {
-    //     let mut offset:Vec3;
-    //     if RNG_CPU {
-    //         offset = random_in_unit_disc();
-    //     } else {
-    //         offset = self.rngState.rngNextVec3InUnitDisk();
-    //     }
-    // 
-    //     let mut origin: Vec3;
-    //     if self.camera_data.defocus_radius < 0.0 {
-    //         origin = self.camera_data.camera_position.xyz();
-    //     } else {
-    //         origin = self.camera_data.camera_position.xyz() + offset.x * self.camera_data.defocus_radius * self.camera_data.camera_right.xyz() +
-    //             offset.y * self.camera_data.defocus_radius * self.camera_data.camera_up.xyz();
-    //     }
-    //     if RNG_CPU {
-    //         offset = random_in_unit_disc();
-    //     } else {
-    //         offset = self.rngState.rngNextVec3InUnitDisk();
-    //     }
-    // 
-    //     let direction = (pixel_00 + (x as f32 + offset.x) * du + (y as f32 + offset.y) * dv - origin).normalize();
-    //     Ray { origin, direction }
-    // }
-
     fn getRay(&mut self, x: u32, y: u32) -> Ray {
-        let mut offset: Vec3;
-        if RNG_CPU {
-            offset = random_in_unit_disc();
-        } else {
-            offset = self.rngState.rngNextVec3InUnitDisk();
-        }
+        let mut offset = self.rngState.rngNextVec3InUnitDisk();
 
         let mut point = Vec2::new((x as f32 + offset.x) / self.frame_buffer[0] as f32, 
                                   1.0 - (y as f32 + offset.y) / self.frame_buffer[1] as f32);
@@ -326,20 +307,17 @@ impl ComputeShader {
         projPoint = projPoint / projPoint.w;
         projPoint = projPoint.xyz().extend(0.0);
 
-        let mut origin = self.camera_data.camera_position.xyz();
+        let mut origin = self.camera_data.position().xyz();
 
-        if self.camera_data.defocus_radius > 0.0 {
-            if RNG_CPU {
-                offset = random_in_unit_disc();
-            } else {
-                offset = self.rngState.rngNextVec3InUnitDisk();
-            }
-            let pLens= (self.camera_data.defocus_radius * offset).extend(1.0);
+        if self.camera_data.defocus_radius() > 0.0 {
+            offset = self.rngState.rngNextVec3InUnitDisk();
+
+            let pLens= (self.camera_data.defocus_radius() * offset).extend(1.0);
             let mut lensOrigin = Mat4::from_cols_array_2d(&self.view_matrix) * pLens;
             lensOrigin = lensOrigin / lensOrigin.w;
             origin = lensOrigin.xyz();
 
-            let tf = self.camera_data.focus_distance / projPoint.z;
+            let tf = self.camera_data.focus_distance() / projPoint.z;
             projPoint = tf * projPoint - pLens;
         }
         
@@ -351,20 +329,16 @@ impl ComputeShader {
 
     fn getScatterRay(&mut self, inRay: Ray,
                      mat_idx: u32,
-                     hit: HitPayload) -> Ray {
+                     hit: HitPayload)
+        -> Ray {
 
         let origin = hit.p;
-        let mat_type: u32 = self.materials[mat_idx as usize].material_type;
+        let mat_type: u32 = self.materials[mat_idx as usize].material_type();
         let mut direction = Vec3::ZERO;
 
         match mat_type {
             0 => {
-                let randomBounce: Vec3;
-                if RNG_CPU {
-                    randomBounce = random_in_unit_sphere().normalize();
-                } else {
-                    randomBounce = self.rngState.rngNextVec3InUnitSphere().normalize();
-                }
+                let randomBounce= self.rngState.rngNextVec3InUnitSphere().normalize();
 
                 direction = hit.n + randomBounce;
                 if direction.length() < 0.0001 {
@@ -372,17 +346,13 @@ impl ComputeShader {
                 }
             }
             1 => {
-                let randomBounce: Vec3;
-                if RNG_CPU {
-                    randomBounce = random_in_unit_sphere().normalize();
-                } else {
-                    randomBounce = self.rngState.rngNextVec3InUnitSphere().normalize();
-                }
-                let fuzz: f32 = self.materials[mat_idx as usize].fuzz;
+                let randomBounce= self.rngState.rngNextVec3InUnitSphere().normalize();
+
+                let fuzz: f32 = self.materials[mat_idx as usize].fuzz();
                 direction = self.reflect(inRay.direction, hit.n) + fuzz * randomBounce;
             }
             2 => {
-                let refract_idx: f32 = self.materials[mat_idx as usize].refract_index;
+                let refract_idx: f32 = self.materials[mat_idx as usize].refract_index();
                 let mut norm= hit.n.clone();
                 let uv = inRay.direction.normalize();
                 let mut cosTheta = norm.dot(-uv).min(1.0); // as uv represents incoming, -uv is outgoing direction
@@ -398,12 +368,8 @@ impl ComputeShader {
 
                 let reflectance: f32 = self.schlick(cosTheta, etaOverEtaPrime);
                 let mut refractDirection = Vec3::ZERO;
-                let cond: f32;
-                if RNG_CPU {
-                    cond = random_f32();
-                } else {
-                    cond = self.rngState.rngNextFloat();
-                }
+                let cond= self.rngState.rngNextFloat();
+
                 if self.refract(uv, norm, etaOverEtaPrime, &mut refractDirection) {
                        if reflectance > cond {
                            direction = self.reflect(uv, norm);
@@ -446,7 +412,6 @@ struct GPURNG {
 }
 
 impl GPURNG {
-
     fn initRng(pixel: UVec2, resolution: (usize, usize), frame: u32) -> Self {
         // the pixel.dot is a fancy way of taking the (i,j) point and converting it to the index
         // jenkinsHash is probably unnecessary
@@ -470,9 +435,6 @@ impl GPURNG {
     }
 
     fn rngNextVec3InUnitDisk(&mut self) -> Vec3 {
-        // Generate numbers uniformly in a disk:
-        // https://stats.stackexchange.com/a/481559
-
         // r^2 is distributed as U(0, 1).
         let r = self.rngNextFloat().sqrt();
         let alpha = 2.0 * PI * self.rngNextFloat();
@@ -486,100 +448,43 @@ impl GPURNG {
     pub fn rngNextVec3InUnitSphere(&mut self) -> Vec3 {
         // probability density is uniformly distributed over r^3
         let r = self.rngNextFloat().powf(0.33333f32);
-        let theta = (2.0 *self.rngNextFloat() - 1.0).acos();
+        let cos_theta = 2.0 * self.rngNextFloat() - 1.0;
+        let sin_theta = (1.0 - cos_theta * cos_theta).sqrt();
         let phi = 2.0 * PI * self.rngNextFloat();
 
-        let x = r * theta.sin() * phi.cos();
-        let y = r * theta.sin() * phi.sin();
-        let z = r * theta.cos();
+        let x = r * sin_theta * phi.cos();
+        let y = r * sin_theta * phi.sin();
+        let z = r * cos_theta;
 
         Vec3::new(x, y, z)
     }
 
-    pub fn rngNextUintInRange(& mut self, min: u32, max: u32) -> u32 {
+    pub fn rngNextUintInRange(&mut self, min: u32, max: u32) -> u32 {
         self.rngNextInt();
         return min + (self.state) % (max - min);
     }
 
     pub fn rngNextFloat(&mut self) -> f32 {
         self.rngNextInt();
-        return self.state as f32 / 4294967295_f32;
+        return self.state as f32 * 2.3283064365387e-10;
     }
-
 
     pub fn rngNextInt(&mut self) {
         // PCG hash RXS-M-XS
-
-        let oldState = self.state.wrapping_mul(747796405).wrapping_add(2891336453); // LCG
+        let oldState = (self.state.wrapping_mul(747796405)).wrapping_add(2891336453); // LCG
         let word = ((oldState >> ((oldState >> 28) + 4)) ^ oldState).wrapping_mul(277803737); // RXS-M
         self.state = (word >> 22) ^ word; // XS
     }
 
     fn jenkinsHash(input: u32) -> u32 {
         let mut x = input;
+
         x = x.wrapping_add(x.wrapping_shl(10));
-        x = x.wrapping_pow(x.wrapping_shr(6));
+        x ^= x >> 6;
         x = x.wrapping_add(x.wrapping_shl(3));
-        x = x.wrapping_pow(x.wrapping_shr(11));
+        x ^= x >> 11;
         x = x.wrapping_add(x.wrapping_shl(15));
 
-        // x += x << 10;
-        // x ^= x >> 6;
-        // x += x << 3;
-        // x ^= x >> 11;
-        // x += x << 15;
         x
     }
-}
-
-pub fn random_f32() -> f32 {
-    let mut rng = rand::thread_rng();
-    rng.gen::<f32>()
-}
-
-pub fn random_vec3() -> Vec3 {
-    Vec3::new(random_f32(), random_f32(), random_f32())
-}
-
-pub fn random_range_f32(min: f32, max: f32) -> f32 {
-    let mut rng = rand::thread_rng();
-    rng.gen_range(min .. max)
-}
-
-pub fn random_Vec3_range(min: f32, max: f32) -> Vec3 {
-    Vec3::new(random_range_f32(min, max),
-              random_range_f32(min, max),
-              random_range_f32(min, max))
-}
-
-pub fn random_in_unit_sphere() -> Vec3 {
-    let mut p: Vec3;
-    loop {
-        p = random_Vec3_range(-1.0, 1.0);
-        if p.length_squared() < 1.0 {
-            return p;
-        }
-    }
-}
-
-pub fn random_in_unit_disc() -> Vec3 {
-    let mut p: Vec3;
-    loop {
-        p = Vec3::new(random_range_f32(-1.0, 1.0), random_range_f32(-1.0, 1.0), 0.0);
-        if p.length_squared() < 1.0 {
-            return p;
-        }
-    }
-}
-
-pub fn random_unit_vector() -> Vec3 {
-    random_in_unit_sphere().normalize()
-}
-
-pub fn random_on_hemisphere(normal: &Vec3) -> Vec3 {
-    let on_unit_sphere = random_unit_vector();
-    if normal.dot(on_unit_sphere) < 0.0 {
-        return -on_unit_sphere;
-    }
-    on_unit_sphere
 }

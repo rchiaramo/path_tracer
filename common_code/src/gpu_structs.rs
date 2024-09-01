@@ -1,56 +1,39 @@
 use glam::{Vec4};
 use crate::parameters::SamplingParameters;
 use crate::camera::Camera;
+use crate::camera_controller::CameraController;
 
 #[repr(C)]
 #[derive(Copy, Clone, Debug)]
 pub struct GPUCamera {
-    pub camera_position: Vec4,
-    pub camera_forwards: Vec4,
-    pub camera_right: Vec4,
-    pub camera_up: Vec4,
-    pub pixel_00: Vec4,
-    pub du: Vec4,
-    pub dv: Vec4,
-    pub defocus_radius: f32,
-    pub focus_distance: f32,
-    _buffer: [u32; 2]
+    camera_position: Vec4,
+    pitch: f32,
+    yaw: f32,
+    defocus_radius: f32,
+    focus_distance: f32,
 }
 unsafe impl bytemuck::Pod for GPUCamera {}
 unsafe impl bytemuck::Zeroable for GPUCamera {}
 
 impl GPUCamera {
-    pub fn new(camera: &Camera, image_size: (u32, u32)) -> GPUCamera {
-        let focus_distance = camera.focus_distance;
-        let defocus_radius = focus_distance * (0.5 * camera.defocus_angle).to_radians().tan();
-        let theta = camera.vfov.to_radians();
-        let h = (theta / 2.0).tan();
-        let viewport_height: f32 = 2.0 * h * camera.focus_distance;
-        let viewport_width: f32 = viewport_height * (image_size.0 as f32 / image_size.1 as f32);
+    pub fn new(camera: &Camera, camera_controller: CameraController) -> GPUCamera {
+        let (defocus_angle_rad, focus_distance) = camera_controller.dof();
+        let defocus_radius = focus_distance * (0.5 * defocus_angle_rad).tan();
 
-        let viewport_u = viewport_width * camera.right;
-        let viewport_v = -viewport_height * camera.up;
-
-        let du = viewport_u / image_size.0 as f32;
-        let dv = viewport_v / image_size.1 as f32;
-
-        let upper_left = camera.position + camera.focus_distance * camera.forwards -
-            0.5 * (viewport_u + viewport_v);
-        let pixel_00 = upper_left + 0.5 * (du + dv);
+        let (camera_position, pitch, yaw) = camera.get_camera();
 
         GPUCamera {
-            camera_position: camera.position.extend(0.0),
-            camera_forwards: camera.forwards.extend(0.0),
-            camera_right: camera.right.extend(0.0),
-            camera_up: camera.up.extend(0.0),
-            pixel_00: pixel_00.extend(0.0),
-            du: du.extend(0.0),
-            dv: dv.extend(0.0),
+            camera_position: camera_position.extend(0.0),
+            pitch,
+            yaw,
             defocus_radius,
             focus_distance,
-            _buffer: [0u32; 2]
         }
     }
+
+    pub fn position(&self) -> Vec4 { self.camera_position }
+    pub fn defocus_radius(&self) -> f32 { self.defocus_radius }
+    pub fn focus_distance(&self) -> f32 { self.focus_distance }
 }
 
 #[repr(C)]
@@ -75,6 +58,9 @@ impl GPUSamplingParameters {
             _buffer: 0u32
         }
     }
+    pub fn spf(&self) -> u32 { self. samples_per_frame}
+    pub fn num_bounces(&self) -> u32 { self.num_bounces }
+    pub fn clear_image(&self) -> u32 { self.clear_image_buffer }
 }
 
 #[repr(C)]
@@ -95,8 +81,7 @@ impl GPUFrameBuffer {
             accumulated_samples
         }
     }
-    
-    pub fn into_array(&self) -> [u32;4]{
+    pub fn into_array(&self) -> [u32; 4] {
         [self.width, self.height, self.frame, self.accumulated_samples]
     }
 }

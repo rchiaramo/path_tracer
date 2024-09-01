@@ -40,12 +40,8 @@ struct HitPayload {
 
 struct CameraData {
     pos: vec4f,
-    forwards: vec4f,
-    right: vec4f,
-    up: vec4f,
-    pixel_00: vec4f,
-    du: vec4f,
-    dv: vec4f,
+    pitch: f32,
+    yaw: f32,
     defocusRadius: f32,
     focusDistance: f32
 }
@@ -99,7 +95,6 @@ fn main(@builtin(global_invocation_id) id: vec3u) {
     }
 
     for (var i: u32 = 0; i < sampling_parameters.samples_per_frame; i++) {
-//        var ray: Ray = getRayOld(camera.pixel_00.xyz, id.x, id.y, camera.du.xyz, camera.dv.xyz, &rng_state);
         var ray: Ray = getRay(id.x, id.y, &rng_state);
         pixel_color += rayColor(ray, &rng_state);
     }
@@ -131,10 +126,6 @@ fn rayColor(primaryRay: Ray, state: ptr<function, u32>) -> vec3<f32> {
             break;
         }
     }
-//    pixel_color.x = pow(pixel_color.x, 1.0/2.4);
-//    pixel_color.y = pow(pixel_color.y, 1.0 / 2.4);
-//    pixel_color.z = pow(pixel_color.z, 1.0 / 2.4);
-//    pixel_color = 1.055 * pixel_color - 0.055;
     return pixel_color;
 }
 
@@ -291,22 +282,6 @@ fn hitSphere(t: f32, ray: Ray, sphere: Sphere, idx: u32) -> HitPayload {
     return HitPayload(t, p, n, idx);
 }
 
-//fn getRayOld(pixel_00: vec3f, x: u32, y: u32, du: vec3f, dv: vec3f, state: ptr<function, u32>) -> Ray {
-//    var offset: vec3f = rngNextVec3InUnitDisk(state);
-//    var ray: Ray;
-//    if camera.defocusRadius < 0.0 {
-//        ray.origin = camera.pos.xyz;
-//    } else {
-//        ray.origin = camera.pos.xyz + offset.x * camera.defocusRadius * camera.right.xyz +
-//            offset.x * camera.defocusRadius * camera.up.xyz;
-//    }
-//
-//    offset = rngNextVec3InUnitDisk(state);
-//    ray.direction = normalize(pixel_00 + (f32(x) + offset.x) * du + (f32(y) + offset.y) * dv - ray.origin);
-//    ray.invDirection = 1.0 / ray.direction;
-//    return ray;
-//}
-
 fn getRay(x: u32, y: u32, state: ptr<function, u32>) -> Ray {
     var offset: vec3f = rngNextVec3InUnitDisk(state);
     var ray: Ray;
@@ -438,9 +413,6 @@ fn rngNextInUnitHemisphere(state: ptr<function, u32>) -> vec3<f32> {
 }
 
 fn rngNextVec3InUnitDisk(state: ptr<function, u32>) -> vec3<f32> {
-    // Generate numbers uniformly in a disk:
-    // https://stats.stackexchange.com/a/481559
-
     // r^2 is distributed as U(0, 1).
     let r = sqrt(rngNextFloat(state));
     let alpha = 2.0 * PI * rngNextFloat(state);
@@ -455,7 +427,7 @@ fn rngNextVec3InUnitSphere(state: ptr<function, u32>) -> vec3<f32> {
     // probability density is uniformly distributed over r^3
     let r = pow(rngNextFloat(state), 0.33333f);
     // and need to distribute theta according to arccos(U[-1,1])
-//    let theta = acos(2f * rngNextFloat(state) - 1.0);
+    // let theta = acos(2f * rngNextFloat(state) - 1.0);
     let cosTheta = 2f * rngNextFloat(state) - 1f;
     let sinTheta = sqrt(1 - cosTheta * cosTheta);
     let phi = 2.0 * PI * rngNextFloat(state);
@@ -483,9 +455,7 @@ fn initRng(pixel: vec2<u32>, resolution: vec2<u32>, frame: u32) -> u32 {
 }
 
 fn rngNextInt(state: ptr<function, u32>) {
-    // PCG random number generator
-    // Based on https://www.shadertoy.com/view/XlGcRh
-
+    // PCG hash RXS-M-XS
     let oldState = *state + 747796405u + 2891336453u;
     let word = ((oldState >> ((oldState >> 28u) + 4u)) ^ oldState) * 277803737u;
     *state = (word >> 22u) ^ word;

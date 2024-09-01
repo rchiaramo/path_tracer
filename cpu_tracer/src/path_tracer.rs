@@ -1,11 +1,13 @@
-use crate::bvh_node::BVHTree;
-use crate::camera::Camera;
+use crate::bvh::BVHTree;
 use crate::compute_shader::ComputeShader;
 use crate::gpu_buffer::GPUBuffer;
 use crate::gpu_structs::{GPUCamera, GPUSamplingParameters};
 use crate::gui::GUI;
-use crate::parameters::{RenderParameters, RenderProgress, SamplingParameters};
+use crate::parameters::{RenderParameters, RenderProgress};
 use crate::scene::Scene;
+use common_code::camera_controller::CameraController;
+use common_code::gpu_structs::GPUFrameBuffer;
+use common_code::projection_matrix::ProjectionMatrix;
 use wgpu::{BindGroup, BindGroupDescriptor, BindGroupLayoutDescriptor, BufferAddress, BufferUsages, Device, Queue, RenderPipeline, ShaderStages, Surface, TextureFormat};
 use winit::event::WindowEvent;
 
@@ -27,7 +29,14 @@ pub struct PathTracer {
 impl PathTracer {
     pub fn new(device: &Device,
                max_window_size: u32,
-               window_size: (u32, u32)) 
+               window_size: (u32, u32),
+               scene: &mut Scene,
+               spp: u32,
+               gpu_sampling_params: GPUSamplingParameters,
+               gpu_camera: GPUCamera,
+               proj_mat: [[f32;4];4],
+               view_mat: [[f32;4];4],
+               render_parameters: RenderParameters)
         -> Option<Self> {
         // create the image_buffer that the compute shader will use to store image
         // we make this array as big as the largest possible window on resize
@@ -69,50 +78,44 @@ impl PathTracer {
             }
         );
 
-        // create the scene and the bvh_tree that corresponds to it
-        let mut scene = Scene::new();
+        // create the bvh_tree that corresponds to the scene
         let mut bvh_tree= BVHTree::new(scene.spheres.len());
         bvh_tree.build_bvh_tree(&mut scene.spheres);
         
-        let spheres_buffer = scene.spheres;
-        let materials_buffer = scene.materials;
-        let bvh_buffer = bvh_tree.tree;
+        let spheres_buffer = scene.spheres.clone();
+        let materials_buffer = scene.materials.clone();
+        let bvh_buffer = bvh_tree.nodes;
 
 
         // create the parameters bind group to interact with GPU during runtime
         // this will include the camera, and the sampling parameters
-        // let lookAt = Vec3::new(0.0, 0.0, -1.0);
-        // let lookFrom = Vec3::new(-2.0, 2.0, 1.0);
-        // let camera = Camera::new(lookAt, lookFrom, 90.0, 0.0,3.4);
-        let camera = Camera::default();
-        let camera_buffer = GPUCamera::new(&camera, window_size);
-        
 
-        let sampling_parameters = SamplingParameters::default();
+        let camera_buffer = gpu_camera;
+
         let sampling_parameters_buffer =
-            GPUSamplingParameters::get_gpu_sampling_params(&sampling_parameters);
-        
-        let ar = window_size.0 as f32 / window_size.1 as f32;
-        let projection_buffer = camera.projection_transform(ar, 0.1, 100.0);
-        let view_buffer = camera.view_transform();
-        
+            gpu_sampling_params;
 
-        let render_parameters =
-            RenderParameters::new(camera, sampling_parameters, window_size);
+        let projection_buffer = proj_mat;
+        let view_buffer = view_mat;
+
         let last_render_parameters = render_parameters.clone();
-        let render_progress = RenderProgress::default();
+        let render_progress = RenderProgress::new(spp);
         
-        let compute_shader = ComputeShader::new(spheres_buffer, 
-                                                materials_buffer, 
-                                                bvh_buffer, 
-                                                camera_buffer, 
-                                                projection_buffer, 
+        let compute_shader = ComputeShader::new(spheres_buffer,
+                                                materials_buffer,
+                                                bvh_buffer,
+                                                camera_buffer,
+                                                projection_buffer,
                                                 view_buffer,
-                                                *render_parameters.sampling_parameters(),
+                                                gpu_sampling_params,
+                                                GPUFrameBuffer::new(window_size.0,
+                                                                    window_size.1,
+                                                                    1,
+                                                                    0),
                                                 max_window_size);
 
         let shader = device.create_shader_module(
-            wgpu::include_wgsl!("screen_shader.wgsl")
+            wgpu::include_wgsl!("../../common_code/shaders/display_shader.wgsl")
         );
 
         let display_pipeline_layout =
@@ -193,7 +196,7 @@ impl PathTracer {
         self.render_parameters = render_parameters
     }
 
-    pub fn update_buffers(&mut self, _queue: &Queue) {
+    pub fn update_buffers(&mut self, _queue: &Queue, camera_controller: CameraController) {
         // if rp is the same as the stored buffer, no need to do anything
         if self.render_parameters == self.last_render_parameters {
             return;
@@ -201,16 +204,21 @@ impl PathTracer {
 
         // eventually we may have other things (e.g. sky) to update here
         let gpu_camera
-            = GPUCamera::new(&self.render_parameters.camera(), self.render_parameters.get_viewport());
+            = GPUCamera::new(&self.render_parameters.camera(), camera_controller);
         self.camera_buffer = gpu_camera;
-        
+
         let (w,h) = self.render_parameters.get_viewport();
         let ar = w as f32 / h as f32;
-        let proj_mat = self.render_parameters.camera().projection_transform(ar, 0.1, 100.0);
+        let (z_near, z_far) = camera_controller.get_clip_planes();
+        let proj_mat = ProjectionMatrix::new(camera_controller.vfov_rad(), ar, z_near, z_far).p_inv();
         let view_mat = self.render_parameters.camera().view_transform();
 
         self.projection_buffer = proj_mat;
         self.view_buffer = view_mat;
+
+        self.compute_shader.queue_camera(self.camera_buffer);
+        self.compute_shader.queue_proj(proj_mat);
+        self.compute_shader.queue_view(view_mat);
 
         self.render_progress.reset();
     }
@@ -218,19 +226,28 @@ impl PathTracer {
     pub fn run_compute_kernel(&mut self, _device: &Device, queue: &Queue) { //, queries: &mut Queries) {
         let size = self.render_parameters.get_viewport();
 
+        // on cpu version, all compute kernal buffers have to be "queued" by copying them to the
+        // compute_shader structure
         let frame = self.render_progress.get_next_frame(&mut self.render_parameters);
+        self.compute_shader.queue_frame(frame);
+
         self.last_render_parameters = self.get_render_parameters();
-        self.frame_buffer.queue_for_gpu(queue, bytemuck::cast_slice(&[frame]));
+
 
         let gpu_sampling_parameters
             = GPUSamplingParameters::get_gpu_sampling_params(self.render_parameters.sampling_parameters());
         self.sampling_parameters_buffer = gpu_sampling_parameters;
+        self.compute_shader.queue_sampling(self.sampling_parameters_buffer.clone());
 
-        self.compute_shader.run_render(queue, size, frame.into_array(), &mut self.image_buffer);
+        self.compute_shader.run_render(queue, size, &mut self.image_buffer);
     }
 
     pub fn run_display_kernel(&mut self, surface: &mut Surface,
                               device: &Device, queue: &Queue, gui: &mut GUI) {
+        // on cpu version there is no compute kernel frame buffer so we have to update it here
+        let (width, height) = self.render_parameters.get_viewport();
+        let frame = self.render_progress.get(width, height);
+        self.frame_buffer.queue_for_gpu(queue, bytemuck::cast_slice(&[frame]));
 
         let output = surface.get_current_texture().unwrap();
         let view = output.texture.create_view(

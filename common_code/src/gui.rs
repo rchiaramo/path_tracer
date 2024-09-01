@@ -16,7 +16,7 @@ pub struct GUI {
 impl GUI {
     pub fn new(window: &Window, surface_cap: &SurfaceConfiguration,
                device: &wgpu::Device, queue: &Queue)
-               -> Option<Self> {
+        -> Option<Self> {
 
         let mut imgui = imgui::Context::create();
         let mut platform = imgui_winit_support::WinitPlatform::init(&mut imgui);
@@ -25,7 +25,7 @@ impl GUI {
             &window,
             imgui_winit_support::HiDpiMode::Default,
         );
-        imgui.set_ini_filename(std::path::PathBuf::from("gpu_tracer/imgui.ini"));
+        imgui.set_ini_filename(std::path::PathBuf::from("imgui.ini"));
 
         let hidpi_factor = window.scale_factor();
         let font_size = (13.0 * hidpi_factor) as f32;
