@@ -7,7 +7,6 @@ use winit::window::{Window, WindowId};
 use crate::camera::Camera;
 use crate::path_tracer::PathTracer;
 use crate::gui::GUI;
-use crate::query_gpu::{Queries, QueryResults};
 
 #[derive(Default)]
 pub struct App<'a> {
@@ -15,7 +14,6 @@ pub struct App<'a> {
     wgpu_state: Option<WgpuState<'a>>,
     path_tracer: Option<PathTracer>,
     gui: Option<GUI>,
-    query_results: QueryResults,
     cursor_position: winit::dpi::PhysicalPosition<f64>
 }
 
@@ -96,8 +94,7 @@ impl ApplicationHandler for App<'_> {
                 WindowEvent::RedrawRequested => {
                     gui.display_ui(window.as_ref(), path_tracer.progress(), 4f64);
                     path_tracer.update_buffers(&state.queue);
-                    //let mut queries = Queries::new(&state.device, QueryResults::NUM_QUERIES);
-                    path_tracer.run_compute_kernel(&state.device, &state.queue); //, &mut queries);
+                    path_tracer.run_compute_kernel(&state.device, &state.queue);
                     path_tracer.run_display_kernel(
                         &mut state.surface,
                         &state.device,

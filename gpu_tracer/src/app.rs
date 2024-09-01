@@ -4,25 +4,46 @@ use winit::event::{ElementState, KeyEvent, WindowEvent};
 use winit::event_loop::{ActiveEventLoop};
 use winit::keyboard::{KeyCode, PhysicalKey};
 use winit::window::{Window, WindowId};
+use common_code::camera_controller::CameraController;
+use common_code::setup::Setup;
 use crate::{PathTracer};
 use crate::query_gpu::{Queries, QueryResults};
 use crate::gui::GUI;
 
-#[derive(Default)]
 pub struct App<'a> {
     window: Option<Arc<Window>>,
     wgpu_state: Option<WgpuState<'a>>,
     path_tracer: Option<PathTracer>,
     gui: Option<GUI>,
     query_results: QueryResults,
+    camera_controller: CameraController,
     cursor_position: winit::dpi::PhysicalPosition<f64>,
+    setup: Setup,
+}
+
+impl<'a> App<'a> {
+    pub fn new(setup: Setup) -> Self {
+        let camera_controller = CameraController::new(
+            setup.vfov, setup.defocus_angle, setup.focus_distance, setup.speed, setup.sensitivity);
+        Self {
+            window: None,
+            wgpu_state: None,
+            path_tracer: None,
+            gui: None,
+            query_results: Default::default(),
+            camera_controller,
+            cursor_position: Default::default(),
+            setup
+        }
+    }
 }
 
 impl ApplicationHandler for App<'_> {
     fn resumed(&mut self, event_loop: &ActiveEventLoop) {
+        let size = self.setup.window_size;
         if self.window.is_none() {
             let win_attr = Window::default_attributes()
-                .with_inner_size(winit::dpi::PhysicalSize::new(1920, 1080))//3840x2160
+                .with_inner_size(winit::dpi::PhysicalSize::new(size.0, size.1))
                 .with_title("GPU path tracer app");
             let window = Arc::new(
                 event_loop.create_window(win_attr).unwrap());
@@ -40,14 +61,14 @@ impl ApplicationHandler for App<'_> {
                 .max()
                 .expect("must have at least one monitor");
 
-            let size = {
-                let viewport = window.inner_size();
-                (viewport.width, viewport.height)
-            };
+            // let size = {
+            //     let viewport = window.inner_size();
+            //     (viewport.width, viewport.height)
+            // };
 
             if let Some(state) = &self.wgpu_state {
                 self.path_tracer =
-                    PathTracer::new(&state.device, max_viewport_resolution, size);
+                    PathTracer::new(&state.device, max_viewport_resolution, size, self.setup.clone());
                 self.gui = GUI::new(&window, &state.surface_config, &state.device, &state.queue);
             }
         }
@@ -96,7 +117,7 @@ impl ApplicationHandler for App<'_> {
 
                 WindowEvent::RedrawRequested => {
                     gui.display_ui(window.as_ref(), path_tracer.progress(), 4f64);
-                    path_tracer.update_buffers(&state.queue);
+                    path_tracer.update_buffers(&state.queue, self.camera_controller.clone());
                     let mut queries = Queries::new(&state.device, QueryResults::NUM_QUERIES);
                     path_tracer.run_compute_kernel(&state.device, &state.queue, &mut queries);
                     path_tracer.run_display_kernel(

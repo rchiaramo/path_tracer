@@ -1,11 +1,13 @@
 [workspace]
-members = [ "cpu_tracer","gpu_tracer"]
+members = [ "cpu_tracer","gpu_tracer", "common_code"]
+resolver = "2"
 
 [workspace.package]
 name = "path_tracer"
 version = "0.1.0"
 authors = ["rchiaramo <rchiaramo@gmail.com>"]
 edition = "2021"
+
 
 [workspace.dependencies]
 winit = "0.30.5"

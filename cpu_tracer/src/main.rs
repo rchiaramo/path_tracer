@@ -1,16 +1,16 @@
 mod app;
 mod path_tracer;
-mod scene;
-mod camera;
-mod material;
-mod sphere;
 mod compute_shader;
-mod bvh_node;
-mod gui;
-mod query_gpu;
-mod parameters;
-mod gpu_structs;
-mod gpu_buffer;
+use common_code::camera;
+use common_code::scene;
+use common_code::gpu_structs;
+use common_code::gpu_buffer;
+use common_code::projection_matrix;
+use common_code::parameters;
+use common_code::bvh;
+use common_code::gui;
+use common_code::sphere;
+use common_code::material;
 
 use winit::error::EventLoopError;
 use winit::event_loop::{ControlFlow, EventLoop};

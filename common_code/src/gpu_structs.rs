@@ -1,35 +1,33 @@
 use glam::{Vec4};
 use crate::parameters::SamplingParameters;
-use crate::Camera;
-
+use crate::camera::Camera;
+use crate::camera_controller::CameraController;
 
 #[repr(C)]
 #[derive(Copy, Clone, Debug)]
 pub struct GPUCamera {
     camera_position: Vec4,
-    camera_forwards: Vec4,
-    camera_right: Vec4,
-    camera_up: Vec4,
+    pitch: f32,
+    yaw: f32,
     defocus_radius: f32,
     focus_distance: f32,
-    _buffer: [u32; 6]
 }
 unsafe impl bytemuck::Pod for GPUCamera {}
 unsafe impl bytemuck::Zeroable for GPUCamera {}
 
 impl GPUCamera {
-    pub fn new(camera: &Camera, image_size: (u32, u32)) -> GPUCamera {
-        let focus_distance = camera.focus_distance;
-        let defocus_radius = focus_distance * (0.5 * camera.defocus_angle).to_radians().tan();
+    pub fn new(camera: &Camera, camera_controller: CameraController) -> GPUCamera {
+        let (defocus_angle_rad, focus_distance) = camera_controller.dof();
+        let defocus_radius = focus_distance * (0.5 * defocus_angle_rad).tan();
+
+        let (camera_position, pitch, yaw) = camera.get_camera();
 
         GPUCamera {
-            camera_position: camera.position.extend(0.0),
-            camera_forwards: camera.forwards.extend(0.0),
-            camera_right: camera.right.extend(0.0),
-            camera_up: camera.up.extend(0.0),
+            camera_position: camera_position.extend(0.0),
+            pitch,
+            yaw,
             defocus_radius,
             focus_distance,
-            _buffer: [0u32; 6]
         }
     }
 }

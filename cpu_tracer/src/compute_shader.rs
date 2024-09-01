@@ -4,7 +4,7 @@ use crate::sphere::Sphere;
 use glam::{Mat4, UVec2, UVec3, Vec2, Vec3, Vec3Swizzles, Vec4, Vec4Swizzles};
 use rand::Rng;
 use wgpu::Queue;
-use crate::bvh_node::{BVHNode};
+use crate::bvh::BVHNode;
 use crate::gpu_buffer::GPUBuffer;
 use crate::gpu_structs::{GPUCamera};
 use crate::parameters::SamplingParameters;

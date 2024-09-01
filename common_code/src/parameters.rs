@@ -1,4 +1,4 @@
-use crate::Camera;
+use crate::camera::Camera;
 use crate::gpu_structs::{GPUFrameBuffer, GPUSamplingParameters};
 
 #[derive(Copy, Clone, PartialEq)]

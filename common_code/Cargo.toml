@@ -1,5 +1,5 @@
 [package]
-name = "gpu_tracer"
+name = "common_code"
 version.workspace = true
 authors.workspace = true
 edition.workspace = true
@@ -16,6 +16,3 @@ rand = { workspace = true }
 imgui = { workspace = true }
 imgui-wgpu = { workspace = true }
 imgui-winit-support = { workspace = true }
-
-[dependencies.common_code]
-path = "../common_code"

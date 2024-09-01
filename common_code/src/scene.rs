@@ -1,6 +1,6 @@
 use glam::{Vec3};
 use crate::material::Material;
-use crate::Sphere;
+use crate::sphere::Sphere;
 use crate::util_funcs::{random_f32, random_range_f32, random_vec3, random_vec3_range};
 
 pub struct Scene {

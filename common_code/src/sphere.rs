@@ -3,9 +3,10 @@ use glam::{Vec3, Vec4, Vec4Swizzles};
 #[repr(C)]
 #[derive(Copy, Clone, Debug)]
 pub struct Sphere {
-    pub(crate) center: Vec4,
-    pub(crate) radius: f32,
-    pub(crate) material_idx: u32
+    pub center: Vec4,
+    radius: f32,
+    material_idx: u32,
+    _buffer: [u32; 2],
 }
 
 unsafe impl bytemuck::Pod for Sphere {}
@@ -14,7 +15,7 @@ unsafe impl bytemuck::Zeroable for Sphere {}
 
 impl Sphere {
     pub fn new(center: Vec3, radius: f32, material_idx: u32) -> Self {
-        Self { center: center.extend(0.0), radius, material_idx } //, _buffer: 0.0, _buffer2: 0.0 }
+        Self { center: center.extend(0.0), radius, material_idx, _buffer: [0u32;2] }
     }
 
     pub fn get_aabb(&self) -> (Vec3, Vec3) {

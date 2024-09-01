@@ -40,9 +40,8 @@ struct HitPayload {
 
 struct CameraData {
     pos: vec4f,
-    forwards: vec4f,
-    right: vec4f,
-    up: vec4f,
+    pitch: f32,
+    yaw: f32,
     defocusRadius: f32,
     focusDistance: f32
 }
