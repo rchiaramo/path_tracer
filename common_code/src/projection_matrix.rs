@@ -6,11 +6,11 @@ pub struct ProjectionMatrix {
 }
 
 impl ProjectionMatrix {
-    pub fn new(vfov: f32, aspect_ratio: f32,
+    pub fn new(vfov_rad: f32, aspect_ratio: f32,
                z_near: f32, z_far: f32) -> Self {
 
         Self {
-            vfov_rad: vfov.to_radians(),
+            vfov_rad,
             aspect_ratio,
             z_near,
             z_far

@@ -24,7 +24,9 @@ fn main() -> Result<(), EventLoopError> {
     env_logger::init();
 
     let scene = Scene::new();
-    let camera = Camera::new(Vec3::new(0.0, 0.0, 1.0), Vec3::new(0.0, 0.0, -1.0));
+    let camera = Camera::new(
+        Vec3::new(0.0, 0.0, 1.0),       //look from
+        Vec3::new(0.0, 0.0, -1.0));     //look at
     let camera_controller
         = CameraController::new(90.0,
                                 0.0,
@@ -37,7 +39,7 @@ fn main() -> Result<(), EventLoopError> {
     let sampling_parameters = SamplingParameters::new(1,
                                                       50,
                                                       1,
-                                                      10);
+                                                      1);
     let render_parameters = RenderParameters::new(camera, sampling_parameters, screen_size);
 
     let event_loop = EventLoop::new()?;

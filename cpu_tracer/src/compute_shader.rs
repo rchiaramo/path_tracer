@@ -458,9 +458,6 @@ impl GPURNG {
     }
 
     fn rngNextVec3InUnitDisk(&mut self) -> Vec3 {
-        // Generate numbers uniformly in a disk:
-        // https://stats.stackexchange.com/a/481559
-
         // r^2 is distributed as U(0, 1).
         let r = self.rngNextFloat().sqrt();
         let alpha = 2.0 * PI * self.rngNextFloat();
@@ -474,12 +471,13 @@ impl GPURNG {
     pub fn rngNextVec3InUnitSphere(&mut self) -> Vec3 {
         // probability density is uniformly distributed over r^3
         let r = self.rngNextFloat().powf(0.33333f32);
-        let theta = (2.0 * self.rngNextFloat() - 1.0).acos();
+        let cos_theta = 2.0 * self.rngNextFloat() - 1.0;
+        let sin_theta = (1.0 - cos_theta * cos_theta).sqrt();
         let phi = 2.0 * PI * self.rngNextFloat();
 
-        let x = r * theta.sin() * phi.cos();
-        let y = r * theta.sin() * phi.sin();
-        let z = r * theta.cos();
+        let x = r * sin_theta * phi.cos();
+        let y = r * sin_theta * phi.sin();
+        let z = r * cos_theta;
 
         Vec3::new(x, y, z)
     }
@@ -491,31 +489,25 @@ impl GPURNG {
 
     pub fn rngNextFloat(&mut self) -> f32 {
         self.rngNextInt();
-        return self.state as f32 / 4294967295_f32;
+        return self.state as f32 * 2.3283064365387e-10;
     }
-
 
     pub fn rngNextInt(&mut self) {
         // PCG hash RXS-M-XS
-
-        let oldState = self.state.wrapping_mul(747796405).wrapping_add(2891336453); // LCG
+        let oldState = (self.state.wrapping_mul(747796405)).wrapping_add(2891336453); // LCG
         let word = ((oldState >> ((oldState >> 28) + 4)) ^ oldState).wrapping_mul(277803737); // RXS-M
         self.state = (word >> 22) ^ word; // XS
     }
 
     fn jenkinsHash(input: u32) -> u32 {
         let mut x = input;
+
         x = x.wrapping_add(x.wrapping_shl(10));
-        x = x.wrapping_pow(x.wrapping_shr(6));
+        x ^= x >> 6;
         x = x.wrapping_add(x.wrapping_shl(3));
-        x = x.wrapping_pow(x.wrapping_shr(11));
+        x ^= x >> 11;
         x = x.wrapping_add(x.wrapping_shl(15));
 
-        // x += x << 10;
-        // x ^= x >> 6;
-        // x += x << 3;
-        // x ^= x >> 11;
-        // x += x << 15;
         x
     }
 }

@@ -25,7 +25,7 @@ impl GUI {
             &window,
             imgui_winit_support::HiDpiMode::Default,
         );
-        imgui.set_ini_filename(std::path::PathBuf::from("gpu_tracer/imgui.ini"));
+        imgui.set_ini_filename(std::path::PathBuf::from("imgui.ini"));
 
         let hidpi_factor = window.scale_factor();
         let font_size = (13.0 * hidpi_factor) as f32;

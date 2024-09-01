@@ -7,23 +7,6 @@ pub struct Camera {
     yaw: f32
 }
 
-impl Default for Camera {
-    fn default() -> Self {
-        let look_at = Vec3::new(0.0, 0.0, -1.0);
-        let position = Vec3::new(0.0, 0.0, 1.0);
-        let forwards = (look_at - position).normalize();
-        let pitch = forwards.y.acos();
-        let sin_pitch = pitch.sin();
-        let yaw = (forwards.x / sin_pitch).asin();
-
-        Self {
-            position,
-            pitch,
-            yaw
-        }
-    }
-}
-
 impl Camera {
     pub fn new(look_from: Vec3, look_at: Vec3) -> Self {
 
@@ -32,7 +15,7 @@ impl Camera {
 
         let pitch = forwards.y.acos();
         let sin_pitch = pitch.sin();
-        let yaw = (forwards.x / sin_pitch).asin();
+        let yaw = (forwards.z / sin_pitch).acos();
 
         Self {
             position,
