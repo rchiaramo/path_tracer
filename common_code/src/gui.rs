@@ -118,7 +118,7 @@ impl GUI {
                         ui.separator();
                         ui.text("Sampling parameters");
 
-                        ui.text("samples per pixel per frame");
+                        ui.text("samples per frame");
                         ui.same_line();
                         ui.radio_button(
                             "1",
@@ -161,12 +161,10 @@ impl GUI {
 
                         ui.slider(
                             "num bounces",
-                            4,
-                            10,
+                            5,
+                            100,
                             &mut spp,
                         );
-
-
                     });
             }
 

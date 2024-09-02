@@ -99,8 +99,11 @@ impl PathTracer {
         let camera_buffer = camera_controller.get_GPU_camera();
 
         let last_render_parameters = render_parameters.clone();
+
+        let spf = render_parameters.sampling_parameters().samples_per_frame;
         let spp= render_parameters.sampling_parameters().samples_per_pixel;
-        let render_progress = RenderProgress::new(spp);
+        let nb = render_parameters.sampling_parameters().num_bounces;
+        let render_progress = RenderProgress::new(spf, spp, nb);
         
         let compute_shader = ComputeShader::new(spheres_buffer,
                                                 materials_buffer,
@@ -226,7 +229,7 @@ impl PathTracer {
     pub fn run_compute_kernel(&mut self, _device: &Device, queue: &Queue) { //, queries: &mut Queries) {
         let size = self.render_parameters.get_viewport();
 
-        // on cpu version, all compute kernal buffers have to be "queued" by copying them to the
+        // on cpu version, all compute kernel buffers have to be "queued" by copying them to the
         // compute_shader structure
         let frame = self.render_progress.get_next_frame(&mut self.render_parameters);
         self.compute_shader.queue_frame(frame);

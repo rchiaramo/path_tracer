@@ -22,6 +22,7 @@ Progress:
 - final pixel color has a sqrt taken; need to investigate colors more
 
 To do (in no particular order):
+- get the cpu code running using multiple threads
 - figure out the bug in the screen resize where the screen goes black
 - see if I can optimize this render time; I feel like 300ms for this image is too long, and I want to do real-time rendering
 - figure out how to accurately get framerate and compute times

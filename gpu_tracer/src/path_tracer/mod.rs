@@ -161,8 +161,11 @@ impl PathTracer {
         });
 
         let last_render_parameters = render_parameters.clone();
+
+        let spf = render_parameters.sampling_parameters().samples_per_frame;
         let spp= render_parameters.sampling_parameters().samples_per_pixel;
-        let render_progress = RenderProgress::new(spp);
+        let nb = render_parameters.sampling_parameters().num_bounces;
+        let render_progress = RenderProgress::new(spf, spp, nb);
 
         // create the compute pipeline
         let ray_tracer_pipeline_layout = device.create_pipeline_layout(

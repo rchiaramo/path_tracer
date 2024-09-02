@@ -40,7 +40,7 @@ fn main() -> Result<(), EventLoopError> {
     let sampling_parameters = SamplingParameters::new(1,
                                                       50,
                                                       1,
-                                                      50);
+                                                      10);
     let render_parameters = RenderParameters::new(camera_controller, sampling_parameters, screen_size);
 
     let event_loop = EventLoop::new()?;

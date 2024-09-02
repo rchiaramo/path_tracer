@@ -59,15 +59,19 @@ impl RenderParameters {
 
 pub struct RenderProgress {
     frame: u32,
+    samples_per_frame: u32,
     samples_per_pixel: u32,
+    num_bounces: u32,
     accumulated_samples: u32,
 }
 
 impl RenderProgress {
-    pub fn new(spp: u32) -> Self {
+    pub fn new(spf: u32, spp: u32, nb: u32) -> Self {
         Self {
             frame: 0,
+            samples_per_frame: spf,
             samples_per_pixel: spp,
+            num_bounces: nb,
             accumulated_samples: 0
         }
     }
@@ -84,6 +88,22 @@ impl RenderProgress {
         // if accumulated samples is 0, there's been something that triggered a reset
         let current_progress = self.accumulated_samples;
         let delta_samples = rp.sampling_parameters.samples_per_frame;
+
+        // update the samples per frame if user changed, but never if spf = 0
+        if delta_samples != 0 && delta_samples != self.samples_per_frame {
+            self.samples_per_frame = delta_samples;
+        }
+
+        // update the samples per pixel if user changed them
+        if rp.sampling_parameters.samples_per_pixel != self.samples_per_pixel {
+            self.samples_per_pixel = rp.sampling_parameters.samples_per_pixel;
+        }
+
+        // update the number of bounces per ray if user changed them
+        if rp.sampling_parameters.num_bounces != self.num_bounces {
+            self.num_bounces = rp.sampling_parameters.num_bounces;
+        }
+
         let updated_progress = current_progress + delta_samples;
         let (width, height) = rp.get_viewport();
         let mut frame = 0;
@@ -91,10 +111,10 @@ impl RenderProgress {
 
         if self.accumulated_samples == 0 {
             rp.sampling_parameters = SamplingParameters::new(
-                rp.sampling_parameters.samples_per_frame,
-                rp.sampling_parameters.num_bounces,
+                self.samples_per_frame,
+                self.num_bounces,
                 1,
-                rp.sampling_parameters.samples_per_pixel
+                self.samples_per_pixel
             );
             frame = 1;
             self.frame = 1;
@@ -103,7 +123,7 @@ impl RenderProgress {
         } else if updated_progress > self.samples_per_pixel {
             rp.sampling_parameters = SamplingParameters::new(
               0,
-              rp.sampling_parameters.num_bounces,
+              self.num_bounces,
               0,
               rp.sampling_parameters.samples_per_pixel
             );
@@ -112,10 +132,10 @@ impl RenderProgress {
             accumulated_samples = current_progress;
         } else {
             rp.sampling_parameters = SamplingParameters::new(
-              rp.sampling_parameters.samples_per_frame,
-              rp.sampling_parameters.num_bounces,
+              self.samples_per_frame,
+              self.num_bounces,
               0,
-              rp.sampling_parameters.samples_per_pixel
+              self.samples_per_pixel
             );
             self.frame += 1;
             frame = self.frame;
