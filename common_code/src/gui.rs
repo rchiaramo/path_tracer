@@ -5,6 +5,7 @@ use imgui_winit_support::WinitPlatform;
 use wgpu::{Queue, SurfaceConfiguration};
 use winit::window::Window;
 use crate::camera_controller::CameraController;
+use crate::parameters::RenderParameters;
 
 pub struct GUI {
     pub platform: WinitPlatform,
@@ -59,7 +60,7 @@ impl GUI {
         })
     }
 
-    pub fn display_ui(&mut self, window: &Window, progress: f32, cam_cont: &mut CameraController) {
+    pub fn display_ui(&mut self, window: &Window, progress: f32, rp: & mut RenderParameters) {
         let dt = self.last_frame.elapsed().as_secs_f32();
         let now = Instant::now();
 
@@ -69,9 +70,11 @@ impl GUI {
         self.imgui.io_mut().update_delta_time(now - self.last_frame);
 
         self.last_frame = now;
-        let average_fps = 4f32;
+        let mut cc = rp.camera_controller().clone();
         let mut spp = 1000u32;
-        let mut fov = cam_cont.vfov_rad().to_degrees();
+        let mut fov = cc.vfov_rad().to_degrees();
+        let (defocus_angle_rad, mut focus_distance) = cc.dof();
+        let mut defocus_angle = defocus_angle_rad.to_degrees();
         {
             self.platform
                 .prepare_frame(self.imgui.io_mut(), &window)
@@ -97,19 +100,21 @@ impl GUI {
                             90.0,
                             &mut fov,
                         );
-                        cam_cont.set_vfov(fov);
+
                         ui.slider(
                             "defocus radius",
                             0.0,
                             1.0,
-                            &mut fov,
+                            &mut defocus_angle,
                         );
+
                         ui.slider(
                             "focus distance",
                             5.0,
                             20.0,
-                            &mut fov,
+                            &mut focus_distance,
                         );
+
                         ui.separator();
                         ui.text("Sampling parameters");
 
@@ -169,6 +174,10 @@ impl GUI {
                 self.last_cursor = ui.mouse_cursor();
                 self.platform.prepare_render(&ui, &window);
             }
+            cc.set_vfov(fov);
+            cc.set_defocus_angle(defocus_angle);
+            cc.set_focus_distance(focus_distance);
+            rp.update_camera_controller(cc);
         }
     }
 }

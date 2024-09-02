@@ -4,39 +4,6 @@ use crate::camera::Camera;
 use crate::camera_controller::CameraController;
 
 #[repr(C)]
-#[derive(Copy, Clone, Debug)]
-pub struct GPUCamera {
-    camera_position: Vec4,
-    pitch: f32,
-    yaw: f32,
-    defocus_radius: f32,
-    focus_distance: f32,
-}
-unsafe impl bytemuck::Pod for GPUCamera {}
-unsafe impl bytemuck::Zeroable for GPUCamera {}
-
-impl GPUCamera {
-    pub fn new(camera: &Camera, camera_controller: CameraController) -> GPUCamera {
-        let (defocus_angle_rad, focus_distance) = camera_controller.dof();
-        let defocus_radius = focus_distance * (0.5 * defocus_angle_rad).tan();
-
-        let (camera_position, pitch, yaw) = camera.get_camera();
-
-        GPUCamera {
-            camera_position: camera_position.extend(0.0),
-            pitch,
-            yaw,
-            defocus_radius,
-            focus_distance,
-        }
-    }
-
-    pub fn position(&self) -> Vec4 { self.camera_position }
-    pub fn defocus_radius(&self) -> f32 { self.defocus_radius }
-    pub fn focus_distance(&self) -> f32 { self.focus_distance }
-}
-
-#[repr(C)]
 #[derive(Copy, Clone, Debug, bytemuck::Pod, bytemuck::Zeroable)]
 pub struct GPUSamplingParameters {
     samples_per_frame: u32,
@@ -45,8 +12,7 @@ pub struct GPUSamplingParameters {
     _buffer: u32,
 }
 
-// right now this is silly, but later when we add fields to this struct,
-// we may have to do some padding for GPU
+// sampling parameters are set at initialization but can also be changed by the user via GUI
 impl GPUSamplingParameters {
     pub fn get_gpu_sampling_params(sampling_parameters: &SamplingParameters)
                                    -> GPUSamplingParameters

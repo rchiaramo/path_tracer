@@ -28,7 +28,8 @@ fn main() -> Result<(), EventLoopError> {
         Vec3::new(0.0, 0.0, 1.0),       //look from
         Vec3::new(0.0, 0.0, -1.0));     //look at
     let camera_controller
-        = CameraController::new(90.0,
+        = CameraController::new(camera,
+                                90.0,
                                 0.0,
                                 3.4,
                                 0.1,
@@ -40,10 +41,10 @@ fn main() -> Result<(), EventLoopError> {
                                                       50,
                                                       1,
                                                       50);
-    let render_parameters = RenderParameters::new(camera, sampling_parameters, screen_size);
+    let render_parameters = RenderParameters::new(camera_controller, sampling_parameters, screen_size);
 
     let event_loop = EventLoop::new()?;
     event_loop.set_control_flow(ControlFlow::Poll);
-    let mut app = App::new(scene, render_parameters, camera_controller);
+    let mut app = App::new(scene, render_parameters);
     event_loop.run_app(&mut app)
 }

@@ -4,10 +4,7 @@ use winit::event::{ElementState, KeyEvent, WindowEvent};
 use winit::event_loop::{ActiveEventLoop};
 use winit::keyboard::{KeyCode, PhysicalKey};
 use winit::window::{Window, WindowId};
-use common_code::camera_controller::CameraController;
-use common_code::gpu_structs::{GPUCamera, GPUSamplingParameters};
 use common_code::parameters::RenderParameters;
-use common_code::projection_matrix::ProjectionMatrix;
 use common_code::scene::Scene;
 use crate::{PathTracer};
 use crate::query_gpu::{Queries, QueryResults};
@@ -19,22 +16,19 @@ pub struct App<'a> {
     path_tracer: Option<PathTracer>,
     gui: Option<GUI>,
     query_results: QueryResults,
-    camera_controller: CameraController,
     cursor_position: winit::dpi::PhysicalPosition<f64>,
     scene: Scene,
     render_parameters: RenderParameters
 }
 
 impl<'a> App<'a> {
-    pub fn new(scene: Scene, render_parameters: RenderParameters, camera_controller: CameraController) -> Self {
-
+    pub fn new(scene: Scene, render_parameters: RenderParameters) -> Self {
         Self {
             window: None,
             wgpu_state: None,
             path_tracer: None,
             gui: None,
             query_results: Default::default(),
-            camera_controller,
             cursor_position: Default::default(),
             scene,
             render_parameters
@@ -66,28 +60,11 @@ impl ApplicationHandler for App<'_> {
                 .expect("must have at least one monitor");
 
             if let Some(state) = &self.wgpu_state {
-                let ar = size.0 as f32 / size.1 as f32;
-                let (z_near, z_far) = self.camera_controller.get_clip_planes();
-                let proj_mat = ProjectionMatrix::new(
-                    self.camera_controller.vfov_rad(), ar, z_near,z_far).p_inv();
-                let view_mat = self.render_parameters.camera().view_transform();
-                let gpu_sampling_params
-                    = GPUSamplingParameters::get_gpu_sampling_params(self.render_parameters.sampling_parameters());
-
-                let gpu_camera = GPUCamera::new(
-                    self.render_parameters.camera(),
-                    self.camera_controller
-                );
-
                 self.path_tracer =
                     PathTracer::new(&state.device,
                                     max_viewport_resolution,
                                     &mut self.scene,
-                                    gpu_sampling_params,
-                                    gpu_camera,
-                                    proj_mat,
-                                    view_mat,
-                                    self.render_parameters.clone());
+                                    &self.render_parameters);
                 self.gui = GUI::new(&window, &state.surface_config, &state.device, &state.queue);
             }
         }
@@ -120,13 +97,14 @@ impl ApplicationHandler for App<'_> {
                     let (width, height) = (new_size.width, new_size.height);
                     rp.set_viewport((width, height));
                     state.resize((width, height));
-                    path_tracer.set_render_parameters(rp);
+                    path_tracer.update_render_parameters(rp);
                 }
                 
                 WindowEvent::CursorMoved { position, ..} => {
                     self.cursor_position = position;
                 }
 
+                // state below is NOT wgpu state as declared above
                 WindowEvent::MouseInput { state, ..
                 } => {
                     if state.is_pressed() {
@@ -135,10 +113,9 @@ impl ApplicationHandler for App<'_> {
                 }
 
                 WindowEvent::RedrawRequested => {
-                    let old_cc = self.camera_controller.clone();
-                    gui.display_ui(window.as_ref(), path_tracer.progress(), &mut self.camera_controller);
-                    let cc_changed = old_cc != self.camera_controller;
-                    path_tracer.update_buffers(&state.queue, self.camera_controller,cc_changed);
+                    gui.display_ui(window.as_ref(), path_tracer.progress(), & mut rp);
+                    path_tracer.update_render_parameters(rp);
+                    path_tracer.update_buffers(&state.queue);
                     let mut queries = Queries::new(&state.device, QueryResults::NUM_QUERIES);
                     path_tracer.run_compute_kernel(&state.device, &state.queue, &mut queries);
                     path_tracer.run_display_kernel(
@@ -155,7 +132,6 @@ impl ApplicationHandler for App<'_> {
                 _ => {}
             }
         }
-
         gui.platform.handle_event(gui.imgui.io_mut(), &window, window_id, &event);
         window.request_redraw();
     }

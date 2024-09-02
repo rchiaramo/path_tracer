@@ -15,24 +15,25 @@ fn main() -> Result<(), EventLoopError> {
     //                          Vec3::new(0.0, 0.0, -1.0));
     let camera = Camera::book_one_final_camera();
     let camera_controller
-        = CameraController::new(20.0,
+        = CameraController::new(camera,
+                                20.0,
                                 0.6,
                                 10.0,
                                 0.1,
                                 100.0,
                                 4.0,
                                 0.4);
-    let screen_size = (3840, 2160); //1920, 1080
+    let screen_size = (1920, 1080); //3840, 2160
     let sampling_parameters = SamplingParameters::new(2,
                                                       50,
                                                       1,
                                                       500);
     let render_parameters
-        = RenderParameters::new(camera, sampling_parameters, screen_size);
+        = RenderParameters::new(camera_controller, sampling_parameters, screen_size);
     
     let event_loop = EventLoop::new()?;
     event_loop.set_control_flow(ControlFlow::Poll);
 
-    let mut app = App::new(scene, render_parameters, camera_controller);
+    let mut app = App::new(scene, render_parameters);
     event_loop.run_app(&mut app)
 }

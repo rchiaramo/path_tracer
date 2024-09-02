@@ -1,4 +1,5 @@
 use crate::camera::Camera;
+use crate::camera_controller::CameraController;
 use crate::gpu_structs::GPUFrameBuffer;
 
 #[derive(Copy, Clone, PartialEq)]
@@ -22,15 +23,15 @@ impl SamplingParameters {
 
 #[derive(Copy, Clone, PartialEq)]
 pub struct RenderParameters {
-    camera: Camera,
+    camera_controller: CameraController,
     sampling_parameters: SamplingParameters,
     viewport_size: (u32, u32)
 }
 
 impl RenderParameters {
-    pub fn new(camera: Camera, sampling_parameters: SamplingParameters, viewport_size: (u32, u32)) -> Self {
+    pub fn new(camera_controller: CameraController, sampling_parameters: SamplingParameters, viewport_size: (u32, u32)) -> Self {
         Self {
-            camera,
+            camera_controller,
             sampling_parameters,
             viewport_size,
         }
@@ -44,12 +45,15 @@ impl RenderParameters {
         self.viewport_size
     }
 
-    pub fn camera(&self) -> &Camera {
-        &self.camera
+    pub fn camera_controller(&self) -> &CameraController {
+        & self.camera_controller
     }
-    pub fn update_camera(&mut self, camera: Camera) { self.camera = camera }
 
     pub fn sampling_parameters(&self) -> &SamplingParameters { &self.sampling_parameters }
+
+    pub fn update_camera_controller(&mut self, camera_controller: CameraController) {
+        self.camera_controller = camera_controller
+    }
 
 }
 

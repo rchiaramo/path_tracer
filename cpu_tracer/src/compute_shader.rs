@@ -1,9 +1,10 @@
 use crate::bvh::BVHNode;
 use crate::gpu_buffer::GPUBuffer;
-use crate::gpu_structs::{GPUCamera, GPUSamplingParameters};
+use crate::gpu_structs::{GPUSamplingParameters};
 use crate::material::Material;
 use crate::sphere::Sphere;
 use common_code::gpu_structs::GPUFrameBuffer;
+use common_code::camera_controller::{GPUCamera};
 use glam::{Mat4, UVec2, UVec3, Vec2, Vec3, Vec3Swizzles, Vec4, Vec4Swizzles};
 use wgpu::Queue;
 

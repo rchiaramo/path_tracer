@@ -1,11 +1,11 @@
 use crate::bvh::BVHTree;
 use crate::compute_shader::ComputeShader;
 use crate::gpu_buffer::GPUBuffer;
-use crate::gpu_structs::{GPUCamera, GPUSamplingParameters};
+use crate::gpu_structs::{GPUSamplingParameters};
 use crate::gui::GUI;
 use crate::parameters::{RenderParameters, RenderProgress};
 use crate::scene::Scene;
-use common_code::camera_controller::CameraController;
+use common_code::camera_controller::{CameraController, GPUCamera};
 use common_code::gpu_structs::GPUFrameBuffer;
 use common_code::projection_matrix::ProjectionMatrix;
 use wgpu::{BindGroup, BindGroupDescriptor, BindGroupLayoutDescriptor, BufferAddress, BufferUsages, Device, Queue, RenderPipeline, ShaderStages, Surface, TextureFormat};
@@ -31,12 +31,7 @@ impl PathTracer {
                max_window_size: u32,
                window_size: (u32, u32),
                scene: &mut Scene,
-               spp: u32,
-               gpu_sampling_params: GPUSamplingParameters,
-               gpu_camera: GPUCamera,
-               proj_mat: [[f32;4];4],
-               view_mat: [[f32;4];4],
-               render_parameters: RenderParameters)
+               rp: &RenderParameters)
         -> Option<Self> {
         // create the image_buffer that the compute shader will use to store image
         // we make this array as big as the largest possible window on resize
@@ -86,19 +81,25 @@ impl PathTracer {
         let materials_buffer = scene.materials.clone();
         let bvh_buffer = bvh_tree.nodes;
 
-
         // create the parameters bind group to interact with GPU during runtime
         // this will include the camera, and the sampling parameters
+        let render_parameters= rp.clone();
+        let camera_controller = render_parameters.camera_controller();
+        let (width, height) = render_parameters.get_viewport();
+        let ar = width as f32 / height as f32;
+        let (z_near, z_far) = camera_controller.get_clip_planes();
+        let projection_buffer = ProjectionMatrix::new(
+            camera_controller.vfov_rad(), ar, z_near,z_far).p_inv();
 
-        let camera_buffer = gpu_camera;
+        let view_buffer = camera_controller.get_view_matrix();
 
-        let sampling_parameters_buffer =
-            gpu_sampling_params;
+        let gpu_sampling_parameters_buffer
+            = GPUSamplingParameters::get_gpu_sampling_params(render_parameters.sampling_parameters());
 
-        let projection_buffer = proj_mat;
-        let view_buffer = view_mat;
+        let camera_buffer = camera_controller.get_GPU_camera();
 
         let last_render_parameters = render_parameters.clone();
+        let spp= render_parameters.sampling_parameters().samples_per_pixel;
         let render_progress = RenderProgress::new(spp);
         
         let compute_shader = ComputeShader::new(spheres_buffer,
@@ -107,7 +108,7 @@ impl PathTracer {
                                                 camera_buffer,
                                                 projection_buffer,
                                                 view_buffer,
-                                                gpu_sampling_params,
+                                                gpu_sampling_parameters_buffer,
                                                 GPUFrameBuffer::new(window_size.0,
                                                                     window_size.1,
                                                                     1,
@@ -167,7 +168,7 @@ impl PathTracer {
             image_buffer,
             frame_buffer,
             camera_buffer,
-            sampling_parameters_buffer,
+            sampling_parameters_buffer: gpu_sampling_parameters_buffer,
             projection_buffer,
             view_buffer,
             display_bind_group,
@@ -192,33 +193,32 @@ impl PathTracer {
         self.render_parameters.clone()
     }
 
-    pub fn set_render_parameters(&mut self, render_parameters: RenderParameters) {
+    pub fn update_render_parameters(&mut self, render_parameters: RenderParameters) {
         self.render_parameters = render_parameters
     }
 
-    pub fn update_buffers(&mut self, _queue: &Queue, camera_controller: CameraController) {
+    pub fn update_buffers(&mut self, _queue: &Queue) {
         // if rp is the same as the stored buffer, no need to do anything
         if self.render_parameters == self.last_render_parameters {
             return;
         }
 
-        // eventually we may have other things (e.g. sky) to update here
-        let gpu_camera
-            = GPUCamera::new(&self.render_parameters.camera(), camera_controller);
-        self.camera_buffer = gpu_camera;
-
+        let camera_controller = self.render_parameters.camera_controller();
+        // update the projection matrix
         let (w,h) = self.render_parameters.get_viewport();
         let ar = w as f32 / h as f32;
         let (z_near, z_far) = camera_controller.get_clip_planes();
-        let proj_mat = ProjectionMatrix::new(camera_controller.vfov_rad(), ar, z_near, z_far).p_inv();
-        let view_mat = self.render_parameters.camera().view_transform();
+        self.projection_buffer = ProjectionMatrix::new(camera_controller.vfov_rad(), ar, z_near, z_far).p_inv();
 
-        self.projection_buffer = proj_mat;
-        self.view_buffer = view_mat;
+        // update the view matrix
+        self.view_buffer = camera_controller.get_view_matrix();
+
+        // update the camera
+        self.camera_buffer = camera_controller.get_GPU_camera();
 
         self.compute_shader.queue_camera(self.camera_buffer);
-        self.compute_shader.queue_proj(proj_mat);
-        self.compute_shader.queue_view(view_mat);
+        self.compute_shader.queue_proj(self.projection_buffer);
+        self.compute_shader.queue_view(self.view_buffer);
 
         self.render_progress.reset();
     }

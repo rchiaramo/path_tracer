@@ -1,6 +1,6 @@
 use crate::bvh::BVHTree;
 use crate::gpu_buffer::GPUBuffer;
-use crate::gpu_structs::{GPUCamera, GPUSamplingParameters};
+use crate::gpu_structs::{GPUSamplingParameters};
 use crate::gui::GUI;
 use crate::parameters::{RenderParameters, RenderProgress};
 use crate::projection_matrix::ProjectionMatrix;
@@ -35,11 +35,7 @@ impl PathTracer {
     pub fn new(device: &Device,
                max_window_size: u32,
                scene: &mut Scene,
-               gpu_sampling_params: GPUSamplingParameters,
-               gpu_camera: GPUCamera,
-               proj_mat: [[f32;4];4],
-               view_mat: [[f32;4];4],
-               render_parameters: RenderParameters)
+               rp: &RenderParameters)
         -> Option<Self> {
         // create the image_buffer that the compute shader will use to store image
         // we make this array as big as the largest possible window on resize
@@ -105,9 +101,20 @@ impl PathTracer {
             entries: &[spheres_buffer.binding(), materials_buffer.binding(), bvh_buffer.binding()],
         });
         
-        
         // create the parameters bind group to interact with GPU during runtime
-        // this will include the camera, and the sampling parameters
+        // this will include the camera controller, the sampling parameters, and the window size
+        let render_parameters= rp.clone();
+        let camera_controller = render_parameters.camera_controller();
+        let (width, height) = render_parameters.get_viewport();
+        let ar = width as f32 / height as f32;
+        let (z_near, z_far) = camera_controller.get_clip_planes();
+        let proj_mat = ProjectionMatrix::new(
+            camera_controller.vfov_rad(), ar, z_near,z_far).p_inv();
+        let view_mat = camera_controller.get_view_matrix();
+        let gpu_sampling_params
+            = GPUSamplingParameters::get_gpu_sampling_params(render_parameters.sampling_parameters());
+
+        let gpu_camera = camera_controller.get_GPU_camera();
 
         let camera_buffer = GPUBuffer::new_from_bytes(device,
                                                       BufferUsages::UNIFORM,
@@ -300,38 +307,33 @@ impl PathTracer {
         self.render_parameters.clone()
     }
 
-    pub fn set_render_parameters(&mut self, render_parameters: RenderParameters) {
+    pub fn update_render_parameters(&mut self, render_parameters: RenderParameters) {
         self.render_parameters = render_parameters
     }
 
-    pub fn update_buffers(&mut self, queue: &Queue, camera_controller: CameraController, cc_changed: bool) {
-        if cc_changed {
-            let (w,h) = self.render_parameters.get_viewport();
-            let ar = w as f32 / h as f32;
-            let (z_near, z_far) = camera_controller.get_clip_planes();
-            let proj_mat = ProjectionMatrix::new(camera_controller.vfov_rad(), ar, z_near, z_far).p_inv();
-            self.projection_buffer.queue_for_gpu(queue, bytemuck::cast_slice(&[proj_mat]));
-
-            let camera = camera_controller.update_camera(self.render_parameters.camera());
-            self.render_parameters.update_camera(camera);
-            self.render_progress.reset();
-        }
+    pub fn update_buffers(&mut self, queue: &Queue) {
         // if rp is the same as the stored buffer, no need to do anything
         if self.render_parameters == self.last_render_parameters {
             return;
         }
 
-        // eventually we may have other things (e.g. sky) to update here
-        let gpu_camera
-            = GPUCamera::new(&self.render_parameters.camera(), camera_controller);
-        self.camera_buffer.queue_for_gpu(queue, bytemuck::cast_slice(&[gpu_camera]));
+        let camera_controller = self.render_parameters.camera_controller();
+        // update the projection matrix
+        let (w,h) = self.render_parameters.get_viewport();
+        let ar = w as f32 / h as f32;
+        let (z_near, z_far) = camera_controller.get_clip_planes();
+        let proj_mat = ProjectionMatrix::new(camera_controller.vfov_rad(), ar, z_near, z_far).p_inv();
+        self.projection_buffer.queue_for_gpu(queue, bytemuck::cast_slice(&[proj_mat]));
 
-        let view_mat = self.render_parameters.camera().view_transform();
-
+        // update the view matrix
+        let view_mat = camera_controller.get_view_matrix();
         self.view_buffer.queue_for_gpu(queue, bytemuck::cast_slice(&[view_mat]));
 
-        self.render_progress.reset();
+        // update the camera
+        let gpu_camera = self.render_parameters.camera_controller().get_GPU_camera();
+        self.camera_buffer.queue_for_gpu(queue, bytemuck::cast_slice(&[gpu_camera]));
 
+        self.render_progress.reset();
     }
 
     pub fn run_compute_kernel(&mut self, device: &Device, queue: &Queue, queries: &mut Queries) {
