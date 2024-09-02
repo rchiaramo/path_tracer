@@ -4,6 +4,7 @@ use imgui_wgpu::{Renderer, RendererConfig};
 use imgui_winit_support::WinitPlatform;
 use wgpu::{Queue, SurfaceConfiguration};
 use winit::window::Window;
+use crate::camera_controller::CameraController;
 
 pub struct GUI {
     pub platform: WinitPlatform,
@@ -58,7 +59,7 @@ impl GUI {
         })
     }
 
-    pub fn display_ui(&mut self, window: &Window, progress: f32, compute_time: f64) {
+    pub fn display_ui(&mut self, window: &Window, progress: f32, cam_cont: &mut CameraController) {
         let dt = self.last_frame.elapsed().as_secs_f32();
         let now = Instant::now();
 
@@ -70,7 +71,7 @@ impl GUI {
         self.last_frame = now;
         let average_fps = 4f32;
         let mut spp = 1000u32;
-        let mut fov = 10f64;
+        let mut fov = cam_cont.vfov_rad().to_degrees();
         {
             self.platform
                 .prepare_frame(self.imgui.io_mut(), &window)
@@ -83,13 +84,33 @@ impl GUI {
                     .size([300.0, 300.0], imgui::Condition::FirstUseEver)
                     .build(|| {
                         ui.text(format!(
-                            "Avg compute time: {:.3}ms, render progress: {:.1} %",
-                            compute_time,
-                            // fps_counter.average_fps(),
+                            "Render progress: {:.1} %",
                             progress * 100.0
                         ));
+
                         ui.separator();
 
+                        ui.text("Camera parameters");
+                        ui.slider(
+                            "vfov",
+                            10.0,
+                            90.0,
+                            &mut fov,
+                        );
+                        cam_cont.set_vfov(fov);
+                        ui.slider(
+                            "defocus radius",
+                            0.0,
+                            1.0,
+                            &mut fov,
+                        );
+                        ui.slider(
+                            "focus distance",
+                            5.0,
+                            20.0,
+                            &mut fov,
+                        );
+                        ui.separator();
                         ui.text("Sampling parameters");
 
                         ui.text("samples per pixel per frame");
@@ -140,50 +161,7 @@ impl GUI {
                             &mut spp,
                         );
 
-                        ui.separator();
 
-                        ui.text("Camera parameters");
-                        ui.slider(
-                            "vfov",
-                            10.0,
-                            90.0,
-                            &mut fov,
-                        );
-                        ui.slider(
-                            "aperture",
-                            0.0,
-                            1.0,
-                            &mut fov,
-                        );
-                        ui.slider(
-                            "focus distance",
-                            5.0,
-                            20.0,
-                            &mut fov,
-                        );
-
-                        ui.separator();
-
-                        ui.text("Sky parameters");
-                        // ui.slider(
-                        //     "azimuth",
-                        //     0_f32,
-                        //     360_f32,
-                        //     & mut fov,
-                        // );
-                        // ui.slider(
-                        //     "inclination",
-                        //     0_f32,
-                        //     90_f32,
-                        //     & mut render_params.sky.zenith_degrees,
-                        // );
-                        // ui.slider(
-                        //     "turbidity",
-                        //     1_f32,
-                        //     10_f32,
-                        //     & mut render_params.sky.turbidity,
-                        // );
-                        // ui.color_edit3("albedo", & mut render_params.sky.albedo);
                     });
             }
 

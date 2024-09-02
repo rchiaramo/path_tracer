@@ -47,6 +47,7 @@ impl RenderParameters {
     pub fn camera(&self) -> &Camera {
         &self.camera
     }
+    pub fn update_camera(&mut self, camera: Camera) { self.camera = camera }
 
     pub fn sampling_parameters(&self) -> &SamplingParameters { &self.sampling_parameters }
 

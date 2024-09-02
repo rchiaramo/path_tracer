@@ -32,6 +32,11 @@ impl Camera {
     pub fn get_camera(&self) -> (Vec3, f32, f32) {
         (self.position, self.pitch, self.yaw)
     }
+    pub fn update_camera(&mut self, camera: Camera) {
+        self.position = camera.position;
+        self.pitch = camera.pitch;
+        self.yaw = camera.yaw;
+    }
 
     pub fn view_transform(& self) -> [[f32; 4]; 4]
     {

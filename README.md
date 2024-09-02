@@ -13,6 +13,8 @@ come back as zeros; second, the wait for result seems to mess up the winit loop 
 I try to resize.
 
 Progress:
+- updated camera and created camera_controller
+- created common_code directory for better overall code management b/w gpu and cpu tracers
 - updated cpu version of tracer for debugging purposes and added it to workgroup
 - added imgui; local imgui files that I modified at this point
 - runs samples/frame until total samples/pixel is complete; shows progress in gui
@@ -20,6 +22,7 @@ Progress:
 - final pixel color has a sqrt taken; need to investigate colors more
 
 To do (in no particular order):
+- figure out the bug in the screen resize where the screen goes black
 - see if I can optimize this render time; I feel like 300ms for this image is too long, and I want to do real-time rendering
 - figure out how to accurately get framerate and compute times
 - implement a wavefront path tracing algorithm

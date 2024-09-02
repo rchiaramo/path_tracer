@@ -135,8 +135,10 @@ impl ApplicationHandler for App<'_> {
                 }
 
                 WindowEvent::RedrawRequested => {
-                    gui.display_ui(window.as_ref(), path_tracer.progress(), 4f64);
-                    path_tracer.update_buffers(&state.queue, self.camera_controller);
+                    let old_cc = self.camera_controller.clone();
+                    gui.display_ui(window.as_ref(), path_tracer.progress(), &mut self.camera_controller);
+                    let cc_changed = old_cc != self.camera_controller;
+                    path_tracer.update_buffers(&state.queue, self.camera_controller,cc_changed);
                     let mut queries = Queries::new(&state.device, QueryResults::NUM_QUERIES);
                     path_tracer.run_compute_kernel(&state.device, &state.queue, &mut queries);
                     path_tracer.run_display_kernel(

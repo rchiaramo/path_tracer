@@ -304,7 +304,18 @@ impl PathTracer {
         self.render_parameters = render_parameters
     }
 
-    pub fn update_buffers(&mut self, queue: &Queue, camera_controller: CameraController) {
+    pub fn update_buffers(&mut self, queue: &Queue, camera_controller: CameraController, cc_changed: bool) {
+        if cc_changed {
+            let (w,h) = self.render_parameters.get_viewport();
+            let ar = w as f32 / h as f32;
+            let (z_near, z_far) = camera_controller.get_clip_planes();
+            let proj_mat = ProjectionMatrix::new(camera_controller.vfov_rad(), ar, z_near, z_far).p_inv();
+            self.projection_buffer.queue_for_gpu(queue, bytemuck::cast_slice(&[proj_mat]));
+
+            let camera = camera_controller.update_camera(self.render_parameters.camera());
+            self.render_parameters.update_camera(camera);
+            self.render_progress.reset();
+        }
         // if rp is the same as the stored buffer, no need to do anything
         if self.render_parameters == self.last_render_parameters {
             return;
@@ -315,13 +326,8 @@ impl PathTracer {
             = GPUCamera::new(&self.render_parameters.camera(), camera_controller);
         self.camera_buffer.queue_for_gpu(queue, bytemuck::cast_slice(&[gpu_camera]));
 
-        let (w,h) = self.render_parameters.get_viewport();
-        let ar = w as f32 / h as f32;
-        let (z_near, z_far) = camera_controller.get_clip_planes();
-        let proj_mat = ProjectionMatrix::new(camera_controller.vfov_rad(), ar, z_near, z_far).p_inv();
         let view_mat = self.render_parameters.camera().view_transform();
 
-        self.projection_buffer.queue_for_gpu(queue, bytemuck::cast_slice(&[proj_mat]));
         self.view_buffer.queue_for_gpu(queue, bytemuck::cast_slice(&[view_mat]));
 
         self.render_progress.reset();

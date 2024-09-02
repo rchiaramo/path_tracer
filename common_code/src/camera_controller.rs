@@ -1,6 +1,6 @@
 use crate::camera::Camera;
 
-#[derive(Default, Copy, Clone)]
+#[derive(Default, Copy, Clone, PartialEq)]
 pub struct CameraController {
     vfov_rad: f32,
     defocus_angle_rad: f32,
@@ -33,6 +33,7 @@ impl CameraController {
     pub fn vfov_rad(&self) -> f32 {
         self.vfov_rad
     }
+    pub fn set_vfov(&mut self, vfov:f32) { self.vfov_rad = vfov.to_radians() }
 
     pub fn dof(&self) -> (f32, f32) {
         (self.defocus_angle_rad, self.focus_distance)
@@ -40,7 +41,7 @@ impl CameraController {
 
     pub fn get_clip_planes(&self) -> (f32, f32) { (self.z_near, self.z_far) }
 
-    pub fn update_camera(&self, camera: &mut Camera) {
-
+    pub fn update_camera(&self, camera: &Camera) -> Camera {
+        { camera.clone() }
     }
 }
