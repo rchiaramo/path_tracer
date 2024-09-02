@@ -1,4 +1,3 @@
-use crate::camera::Camera;
 use crate::camera_controller::CameraController;
 use crate::gpu_structs::GPUFrameBuffer;
 
@@ -24,7 +23,7 @@ impl SamplingParameters {
 #[derive(Copy, Clone, PartialEq)]
 pub struct RenderParameters {
     camera_controller: CameraController,
-    sampling_parameters: SamplingParameters,
+    pub sampling_parameters: SamplingParameters,
     viewport_size: (u32, u32)
 }
 
@@ -125,17 +124,19 @@ impl RenderProgress {
               0,
               self.num_bounces,
               0,
-              rp.sampling_parameters.samples_per_pixel
+              self.samples_per_pixel
             );
             self.frame += 1;
             frame = self.frame;
             accumulated_samples = current_progress;
         } else {
             rp.sampling_parameters = SamplingParameters::new(
-              self.samples_per_frame,
-              self.num_bounces,
-              0,
-              self.samples_per_pixel
+                // here we need to use the sampling parameters spf as at the end of the render
+                // it is zero; we want it to stay that way
+                rp.sampling_parameters.samples_per_frame,
+                self.num_bounces,
+                0,
+                self.samples_per_pixel
             );
             self.frame += 1;
             frame = self.frame;

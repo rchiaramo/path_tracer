@@ -23,24 +23,25 @@ use winit::event_loop::{ControlFlow, EventLoop};
 fn main() -> Result<(), EventLoopError> {
     env_logger::init();
 
-    let scene = Scene::new();
+    let scene = Scene::book_one_final();
     let camera = Camera::new(
         Vec3::new(0.0, 0.0, 1.0),       //look from
         Vec3::new(0.0, 0.0, -1.0));     //look at
+    let camera = Camera::book_one_final_camera();
     let camera_controller
         = CameraController::new(camera,
-                                90.0,
-                                0.0,
-                                3.4,
+                                20.0,
+                                0.6,
+                                10.0,
                                 0.1,
                                 100.0,
                                 4.0,
                                 0.4);
-    let screen_size = (1920, 1080);
-    let sampling_parameters = SamplingParameters::new(1,
+    let screen_size = (1920, 1080); //3840, 2160
+    let sampling_parameters = SamplingParameters::new(5,
                                                       50,
                                                       1,
-                                                      10);
+                                                      100);
     let render_parameters = RenderParameters::new(camera_controller, sampling_parameters, screen_size);
 
     let event_loop = EventLoop::new()?;

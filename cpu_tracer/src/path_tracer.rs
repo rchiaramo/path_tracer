@@ -5,7 +5,7 @@ use crate::gpu_structs::{GPUSamplingParameters};
 use crate::gui::GUI;
 use crate::parameters::{RenderParameters, RenderProgress};
 use crate::scene::Scene;
-use common_code::camera_controller::{CameraController, GPUCamera};
+use common_code::camera_controller::{GPUCamera};
 use common_code::gpu_structs::GPUFrameBuffer;
 use common_code::projection_matrix::ProjectionMatrix;
 use wgpu::{BindGroup, BindGroupDescriptor, BindGroupLayoutDescriptor, BufferAddress, BufferUsages, Device, Queue, RenderPipeline, ShaderStages, Surface, TextureFormat};
@@ -242,7 +242,8 @@ impl PathTracer {
         self.sampling_parameters_buffer = gpu_sampling_parameters;
         self.compute_shader.queue_sampling(self.sampling_parameters_buffer.clone());
 
-        self.compute_shader.run_render(queue, size, &mut self.image_buffer);
+        // self.compute_shader.run_render(queue, size, &mut self.image_buffer);
+        self.compute_shader.run_parallel_render(queue, size, &mut self.image_buffer);
     }
 
     pub fn run_display_kernel(&mut self, surface: &mut Surface,

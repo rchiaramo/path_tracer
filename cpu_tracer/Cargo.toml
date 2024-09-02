@@ -16,6 +16,7 @@ rand = { workspace = true }
 imgui = { workspace = true }
 imgui-wgpu = { workspace = true }
 imgui-winit-support = { workspace = true }
+rayon = "1.10.0"
 
 [dependencies.common_code]
 path = "../common_code"

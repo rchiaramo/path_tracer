@@ -4,7 +4,6 @@ use imgui_wgpu::{Renderer, RendererConfig};
 use imgui_winit_support::WinitPlatform;
 use wgpu::{Queue, SurfaceConfiguration};
 use winit::window::Window;
-use crate::camera_controller::CameraController;
 use crate::parameters::RenderParameters;
 
 pub struct GUI {
@@ -71,7 +70,6 @@ impl GUI {
 
         self.last_frame = now;
         let mut cc = rp.camera_controller().clone();
-        let mut spp = 1000u32;
         let mut fov = cc.vfov_rad().to_degrees();
         let (defocus_angle_rad, mut focus_distance) = cc.dof();
         let mut defocus_angle = defocus_angle_rad.to_degrees();
@@ -117,53 +115,25 @@ impl GUI {
 
                         ui.separator();
                         ui.text("Sampling parameters");
-
-                        ui.text("samples per frame");
-                        ui.same_line();
-                        ui.radio_button(
-                            "1",
-                            &mut spp,
-                            // &mut render_params.sampling.num_samples_per_pixel,
-                            1_u32,
-                        );
-                        ui.same_line();
-                        ui.radio_button(
-                            "4",
-                            &mut spp,
-                            4_u32,
-                        );
-                        ui.same_line();
-                        ui.radio_button(
-                            "8",
-                            &mut spp,
-                            8_u32,
+                        ui.slider(
+                            "Samples per frame",
+                            1,
+                            10,
+                            &mut rp.sampling_parameters.samples_per_frame,
                         );
 
-                        ui.text("total samples per pixel");
-                        ui.same_line();
-                        ui.radio_button(
-                            "128",
-                            &mut spp,
-                            128_u32,
-                        );
-                        ui.same_line();
-                        ui.radio_button(
-                            "256",
-                            &mut spp,
-                            256_u32,
-                        );
-                        ui.same_line();
-                        ui.radio_button(
-                            "512",
-                            &mut spp,
-                            512_u32,
+                        ui.slider(
+                            "Samples per pixel",
+                            10,
+                            1000,
+                            &mut rp.sampling_parameters.samples_per_pixel,
                         );
 
                         ui.slider(
                             "num bounces",
                             5,
                             100,
-                            &mut spp,
+                            &mut rp.sampling_parameters.num_bounces,
                         );
                     });
             }
