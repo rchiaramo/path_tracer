@@ -1,6 +1,7 @@
 use std::f32::consts::{FRAC_PI_2, PI};
 use std::time::Duration;
-use glam::Vec4;
+use glam::{Vec3, Vec4};
+use imgui::Key::P;
 use crate::camera::Camera;
 
 #[derive(Copy, Clone, PartialEq)]
@@ -11,6 +12,12 @@ pub struct CameraController {
     focus_distance: f32,
     z_near: f32,
     z_far: f32,
+    amount_forward: f32,
+    amount_backward: f32,
+    amount_right: f32,
+    amount_left: f32,
+    amount_up: f32,
+    amount_down: f32,
     rotate_horizontal: f32,
     rotate_vertical: f32,
     speed: f32,
@@ -30,6 +37,12 @@ impl CameraController {
             focus_distance,
             z_near,
             z_far,
+            amount_forward: 0.0,
+            amount_backward: 0.0,
+            amount_right: 0.0,
+            amount_left: 0.0,
+            amount_up: 0.0,
+            amount_down: 0.0,
             rotate_horizontal: 0.0,
             rotate_vertical: 0.0,
             speed,
@@ -63,7 +76,69 @@ impl CameraController {
         self.rotate_vertical = delta[1];
     }
 
+    pub fn move_up(&mut self, dir: u32) {
+        if dir == 1 {
+            self.amount_up = 1.0;
+        } else {
+            self.amount_up = 0.0;
+        }
+    }
+
+    pub fn move_down(&mut self, dir: u32) {
+        if dir == 1 {
+            self.amount_down = 1.0;
+        } else {
+            self.amount_down = 0.0;
+        }
+    }
+
+    pub fn move_forward(&mut self, dir: u32) {
+        if dir == 1 {
+            self.amount_forward = 1.0;
+        } else {
+            self.amount_forward = 0.0;
+        }
+    }
+
+    pub fn move_backwards(&mut self, dir: u32) {
+        if dir == 1 {
+            self.amount_backward = 1.0;
+        } else {
+            self.amount_backward = 0.0;
+        }
+    }
+
+    pub fn move_right(&mut self, dir: u32) {
+        if dir == 1 {
+            self.amount_right = 1.0;
+        } else {
+            self.amount_right = 0.0;
+        }
+    }
+
+    pub fn move_left(&mut self, dir: u32) {
+        if dir == 1 {
+            self.amount_left = 1.0;
+        } else {
+            self.amount_left = 0.0;
+        }
+    }
+
     pub fn update_camera(&mut self, dt: f32) {
+        // Move forward/backward and left/right
+        let (sin_yaw, cos_yaw) = self.camera.yaw.sin_cos();
+
+        let forward = Vec3::new(sin_yaw, 0.0, cos_yaw);
+        let right = Vec3::new(-cos_yaw, 0.0, sin_yaw);
+
+        self.camera.position += forward * (self.amount_forward - self.amount_backward) * self.speed * dt;
+        self.camera.position += right * (self.amount_right - self.amount_left) * self.speed * dt;
+
+
+        // Move up/down. Since we don't use roll, we can just
+        // modify the y coordinate directly.
+        self.camera.position.y += (self.amount_up - self.amount_down) * self.speed * dt;
+
         // Rotate
         self.camera.yaw -= self.rotate_horizontal * self.sensitivity * dt;
         self.camera.pitch -= self.rotate_vertical * self.sensitivity * dt;

@@ -80,12 +80,54 @@ impl GUI {
                 .expect("WinitPlatform::prepare_frame failed");
 
             let ui = self.imgui.frame();
+
+            // if the right mouse button is held down and we move the mouse, we can orient the camera
             let mouse_down = ui.io().mouse_down;
-            if mouse_down[0] {
+            if mouse_down[1] {
                 let mouse_delta = ui.io().mouse_delta;
                 cc.process_mouse(mouse_delta);
-                cc.update_camera(dt);
             }
+            // move up/down
+            if ui.is_key_pressed(imgui::Key::E) {
+                cc.move_up(1);
+            }
+            if ui.is_key_released(imgui::Key::E) {
+                cc.move_up(0);
+            }
+            if ui.is_key_pressed(imgui::Key::Q) {
+                cc.move_down(1);
+            }
+            if ui.is_key_released(imgui::Key::Q) {
+                cc.move_down(0);
+            }
+            // move forward/backwards
+            if ui.is_key_pressed(imgui::Key::W) {
+                cc.move_forward(1);
+            }
+            if ui.is_key_released(imgui::Key::W) {
+                cc.move_forward(0);
+            }
+            if ui.is_key_pressed(imgui::Key::S) {
+                cc.move_backwards(1);
+            }
+            if ui.is_key_released(imgui::Key::S) {
+                cc.move_backwards(0);
+            }
+            // move left/right
+            if ui.is_key_pressed(imgui::Key::D) {
+                cc.move_right(1);
+            }
+            if ui.is_key_released(imgui::Key::D) {
+                cc.move_right(0);
+            }
+            if ui.is_key_pressed(imgui::Key::A) {
+                cc.move_left(1);
+            }
+            if ui.is_key_released(imgui::Key::A) {
+                cc.move_left(0);
+            }
+
+            cc.update_camera(dt);
 
             {
                 let window = ui.window("Parameters");

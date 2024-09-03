@@ -13,6 +13,7 @@ come back as zeros; second, the wait for result seems to mess up the winit loop 
 I try to resize.
 
 Progress:
+- basic camera movement implemented
 - cpu code now runs with threads using rayon
 - fixed resize screen bug
 - updated camera and created camera_controller
@@ -28,6 +29,5 @@ To do (in no particular order):
 - figure out how to accurately get framerate and compute times
 - implement a wavefront path tracing algorithm
 - add other shapes (triangles, planes, quads, planes, etc)
-- add an interactive camera
 - add more complex rendering ideas from PBR book
 - load in more complex obj files for some cool pictures
