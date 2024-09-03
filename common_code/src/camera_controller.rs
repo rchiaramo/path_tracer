@@ -1,3 +1,5 @@
+use std::f32::consts::{FRAC_PI_2, PI};
+use std::time::Duration;
 use glam::Vec4;
 use crate::camera::Camera;
 
@@ -17,6 +19,8 @@ pub struct CameraController {
 
 
 impl CameraController {
+    const SAFE_FRAC_PI:f32 = PI - 0.001;
+
     pub fn new(camera: Camera, vfov: f32, defocus_angle: f32, focus_distance: f32,
                z_near:f32, z_far: f32, speed: f32, sensitivity: f32) -> Self {
         Self {
@@ -52,6 +56,30 @@ impl CameraController {
 
     pub fn get_view_matrix(&self) -> [[f32;4];4] {
         self.camera.view_transform()
+    }
+
+    pub fn process_mouse(&mut self, delta: [f32; 2]) {
+        self.rotate_horizontal = delta[0];
+        self.rotate_vertical = delta[1];
+    }
+
+    pub fn update_camera(&mut self, dt: f32) {
+        // Rotate
+        self.camera.yaw -= self.rotate_horizontal * self.sensitivity * dt;
+        self.camera.pitch -= self.rotate_vertical * self.sensitivity * dt;
+
+        // If process_mouse isn't called every frame, these values
+        // will not get set to zero, and the camera will rotate
+        // when moving in a non-cardinal direction.
+        self.rotate_horizontal = 0.0;
+        self.rotate_vertical = 0.0;
+
+        // Keep the camera's angle from going too high/low.
+        if self.camera.pitch < -Self::SAFE_FRAC_PI {
+            self.camera.pitch = -Self::SAFE_FRAC_PI;
+        } else if self.camera.pitch > Self::SAFE_FRAC_PI {
+            self.camera.pitch = Self::SAFE_FRAC_PI;
+        }
     }
 }
 

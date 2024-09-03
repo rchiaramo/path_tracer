@@ -1,6 +1,7 @@
 use std::sync::Arc;
+use std::time::Instant;
 use winit::application::ApplicationHandler;
-use winit::event::{ElementState, KeyEvent, WindowEvent};
+use winit::event::{DeviceEvent, DeviceId, ElementState, KeyEvent, WindowEvent};
 use winit::event_loop::{ActiveEventLoop};
 use winit::keyboard::{KeyCode, PhysicalKey};
 use winit::window::{Window, WindowId};
@@ -18,7 +19,8 @@ pub struct App<'a> {
     query_results: QueryResults,
     cursor_position: winit::dpi::PhysicalPosition<f64>,
     scene: Scene,
-    render_parameters: RenderParameters
+    render_parameters: RenderParameters,
+    last_render_time: Instant
 }
 
 impl<'a> App<'a> {
@@ -31,7 +33,8 @@ impl<'a> App<'a> {
             query_results: Default::default(),
             cursor_position: Default::default(),
             scene,
-            render_parameters
+            render_parameters,
+            last_render_time: Instant::now()
         }
     }
 }
@@ -113,7 +116,12 @@ impl ApplicationHandler for App<'_> {
                 }
 
                 WindowEvent::RedrawRequested => {
+                    let now = Instant::now();
+                    let dt = now - self.last_render_time;
+                    self.last_render_time = now;
+
                     gui.display_ui(window.as_ref(), path_tracer.progress(), & mut rp);
+
                     path_tracer.update_render_parameters(rp);
                     path_tracer.update_buffers(&state.queue);
                     let mut queries = Queries::new(&state.device, QueryResults::NUM_QUERIES);

@@ -3,8 +3,8 @@ use glam::{Vec3};
 #[derive(Copy, Clone, PartialEq)]
 pub struct Camera {
     pub position: Vec3,
-    pitch: f32,
-    yaw: f32
+    pub pitch: f32,
+    pub yaw: f32
 }
 
 impl Camera {

@@ -67,18 +67,26 @@ impl GUI {
         // fly_camera_controller.after_events(render_params.viewport_size, 2.0 * dt);
 
         self.imgui.io_mut().update_delta_time(now - self.last_frame);
-
         self.last_frame = now;
+
         let mut cc = rp.camera_controller().clone();
         let mut fov = cc.vfov_rad().to_degrees();
         let (defocus_angle_rad, mut focus_distance) = cc.dof();
         let mut defocus_angle = defocus_angle_rad.to_degrees();
+
         {
             self.platform
                 .prepare_frame(self.imgui.io_mut(), &window)
                 .expect("WinitPlatform::prepare_frame failed");
 
             let ui = self.imgui.frame();
+            let mouse_down = ui.io().mouse_down;
+            if mouse_down[0] {
+                let mouse_delta = ui.io().mouse_delta;
+                cc.process_mouse(mouse_delta);
+                cc.update_camera(dt);
+            }
+
             {
                 let window = ui.window("Parameters");
                 window
