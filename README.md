@@ -8,9 +8,11 @@ to the latest Winit version as yet.
 
 I'm currently only rendering the final scene is RTiOW, though I used a BVH implemented
 with the SAH. I'm also trying to clock the megakernel (compute only)
-using write_timestamps, though there are two issues: first, the timestamps occasionally
-come back as zeros; second, the wait for result seems to mess up the winit loop when
-I try to resize.
+using write_timestamps, though the timestamps occasionally come back as zeros.
+
+At this point in my progress, the next step is to implement a wavefront pathtracer.  I will
+copy this code to a new repository, path_tracer_wavefront, and start fresh there with this
+as the starting point.  I want to keep this in a working state for future comparisons.
 
 Progress:
 - basic camera movement implemented
@@ -26,7 +28,6 @@ Progress:
 
 To do (in no particular order):
 - see if I can optimize this render time; I feel like 300ms for this image is too long, and I want to do real-time rendering
-- figure out how to accurately get framerate and compute times
 - implement a wavefront path tracing algorithm
 - add other shapes (triangles, planes, quads, planes, etc)
 - add more complex rendering ideas from PBR book

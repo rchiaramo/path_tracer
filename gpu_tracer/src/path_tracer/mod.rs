@@ -369,7 +369,7 @@ impl PathTracer {
             compute_pass.set_bind_group(0, &self.image_bind_group, &[]);
             compute_pass.set_bind_group(1, &self.scene_bind_group, &[]);
             compute_pass.set_bind_group(2, &self.parameters_bind_group, &[]);
-            compute_pass.dispatch_workgroups(size.0, size.1, 1);
+            compute_pass.dispatch_workgroups(size.0 / 4, size.1 / 4, 1);
 
         }
         queries.resolve(&mut encoder);

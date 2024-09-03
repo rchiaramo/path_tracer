@@ -14,4 +14,5 @@ use common_code::bvh;
 use common_code::gui;
 use common_code::gpu_buffer;
 use common_code::scene;
+use common_code::frames_per_second;
 

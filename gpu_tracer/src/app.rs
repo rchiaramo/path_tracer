@@ -1,3 +1,4 @@
+use std::collections::VecDeque;
 use std::sync::Arc;
 use std::time::Instant;
 use winit::application::ApplicationHandler;
@@ -5,6 +6,7 @@ use winit::event::{DeviceEvent, DeviceId, ElementState, KeyEvent, WindowEvent};
 use winit::event_loop::{ActiveEventLoop};
 use winit::keyboard::{KeyCode, PhysicalKey};
 use winit::window::{Window, WindowId};
+use common_code::frames_per_second::FramesPerSecond;
 use common_code::parameters::RenderParameters;
 use common_code::scene::Scene;
 use crate::{PathTracer};
@@ -20,7 +22,8 @@ pub struct App<'a> {
     cursor_position: winit::dpi::PhysicalPosition<f64>,
     scene: Scene,
     render_parameters: RenderParameters,
-    last_render_time: Instant
+    last_render_time: Instant,
+    frames_per_second: FramesPerSecond,
 }
 
 impl<'a> App<'a> {
@@ -34,7 +37,8 @@ impl<'a> App<'a> {
             cursor_position: Default::default(),
             scene,
             render_parameters,
-            last_render_time: Instant::now()
+            last_render_time: Instant::now(),
+            frames_per_second: FramesPerSecond::new()
         }
     }
 }
@@ -119,8 +123,10 @@ impl ApplicationHandler for App<'_> {
                     let now = Instant::now();
                     let dt = now - self.last_render_time;
                     self.last_render_time = now;
-
-                    gui.display_ui(window.as_ref(), path_tracer.progress(), & mut rp);
+                    self.frames_per_second.update(dt);
+                    let avg_fps= self.frames_per_second.get_avg_fps();
+                    let kernel_time= self.query_results.get_running_avg();
+                    gui.display_ui(window.as_ref(), path_tracer.progress(), & mut rp, avg_fps, kernel_time, dt);
 
                     path_tracer.update_render_parameters(rp);
                     path_tracer.update_buffers(&state.queue);
@@ -132,9 +138,9 @@ impl ApplicationHandler for App<'_> {
                         &state.queue,
                         gui
                     );
-                    // let raw_results = queries.wait_for_results(&state.device);
+                    let raw_results = queries.wait_for_results(&state.device);
                     // println!("Raw timestamp buffer contents: {:?}", &raw_results);
-                    // self.query_results.process_raw_results(&state.queue, raw_results);
+                    self.query_results.process_raw_results(&state.queue, raw_results);
                 }
 
                 _ => {}

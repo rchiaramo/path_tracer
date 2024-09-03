@@ -32,25 +32,18 @@ impl QueryResults {
     pub fn process_raw_results(&mut self, queue: &Queue, timestamps: Vec<u64>) {
         assert_eq!(timestamps.len(), Self::NUM_QUERIES as usize);
 
-        // let mut next_slot = 0;
-        // let mut get_next_slot = || {
-        //     let slot = timestamps[next_slot];
-        //     next_slot += 1;
-        //     slot
-        // };
-
-        let compute_start_end_timestamps = [timestamps[0], timestamps[1]];
         let period = queue.get_timestamp_period();
-        let elapsed_ms = |start, end: u64| { end.wrapping_sub(start) as f64 * period as f64 / (1000000.0) };
-        self.running_avg.push_front(elapsed_ms(timestamps[0], timestamps[1]));
-        if self.running_avg.len() > Self::RUNNING_AVG_LENGTH {
+        let elapsed_us = |start, end: u64| { end.wrapping_sub(start) as f64 * period as f64 / (1000.0) };
+
+        if self.running_avg.len() == Self::RUNNING_AVG_LENGTH {
             self.running_avg.pop_back();
         }
+        self.running_avg.push_front(elapsed_us(timestamps[0], timestamps[1]));
     }
 
-    pub fn get_running_avg(&self) -> f64 {
+    pub fn get_running_avg(&self) -> f32 {
         let sum: f64 = self.running_avg.iter().sum();
-        sum / self.running_avg.len() as f64
+        (sum / self.running_avg.len() as f64) as f32
     }
 
     #[cfg_attr(test, allow(unused))]

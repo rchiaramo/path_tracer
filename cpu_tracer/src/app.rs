@@ -6,11 +6,13 @@ use common_code::parameters::RenderParameters;
 use common_code::projection_matrix::ProjectionMatrix;
 use common_code::scene::Scene;
 use std::sync::Arc;
+use std::time::Instant;
 use winit::application::ApplicationHandler;
 use winit::event::{ElementState, KeyEvent, WindowEvent};
 use winit::event_loop::ActiveEventLoop;
 use winit::keyboard::{KeyCode, PhysicalKey};
 use winit::window::{Window, WindowId};
+use common_code::frames_per_second::FramesPerSecond;
 
 pub struct App<'a> {
     window: Option<Arc<Window>>,
@@ -19,7 +21,9 @@ pub struct App<'a> {
     gui: Option<GUI>,
     cursor_position: winit::dpi::PhysicalPosition<f64>,
     scene: Scene,
-    render_parameters: RenderParameters
+    render_parameters: RenderParameters,
+    last_render_time: Instant,
+    frames_per_second: FramesPerSecond,
 }
 
 impl<'a> App<'a> {
@@ -31,7 +35,9 @@ impl<'a> App<'a> {
             gui: None,
             cursor_position: Default::default(),
             scene,
-            render_parameters
+            render_parameters,
+            last_render_time: Instant::now(),
+            frames_per_second: FramesPerSecond::new()
         }
     }
 }
@@ -115,7 +121,13 @@ impl ApplicationHandler for App<'_> {
                 }
 
                 WindowEvent::RedrawRequested => {
-                    gui.display_ui(window.as_ref(), path_tracer.progress(), &mut rp);
+                    let now = Instant::now();
+                    let dt = now - self.last_render_time;
+                    self.last_render_time = now;
+                    self.frames_per_second.update(dt);
+                    let avg_fps= self.frames_per_second.get_avg_fps();
+
+                    gui.display_ui(window.as_ref(), path_tracer.progress(), & mut rp, avg_fps, 0.0, dt);
                     path_tracer.update_render_parameters(rp);
                     path_tracer.update_buffers(&state.queue);
                     path_tracer.run_compute_kernel(&state.device, &state.queue);

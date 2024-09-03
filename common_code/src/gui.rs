@@ -1,4 +1,4 @@
-use std::time::Instant;
+use std::time::{Duration, Instant};
 use imgui::{FontSource, MouseCursor};
 use imgui_wgpu::{Renderer, RendererConfig};
 use imgui_winit_support::WinitPlatform;
@@ -11,7 +11,6 @@ pub struct GUI {
     pub imgui: imgui::Context,
     pub imgui_renderer: Renderer,
     last_cursor: Option<MouseCursor>,
-    last_frame: Instant,
 }
 
 impl GUI {
@@ -48,26 +47,17 @@ impl GUI {
 
         let mut imgui_renderer = Renderer::new(&mut imgui, &device, &queue, renderer_config);
 
-        let mut last_frame = Instant::now();
-
         Some(Self {
             platform,
             imgui,
             imgui_renderer,
             last_cursor: None,
-            last_frame,
         })
     }
 
-    pub fn display_ui(&mut self, window: &Window, progress: f32, rp: & mut RenderParameters) {
-        let dt = self.last_frame.elapsed().as_secs_f32();
-        let now = Instant::now();
-
-        // fps_counter.update(dt);
-        // fly_camera_controller.after_events(render_params.viewport_size, 2.0 * dt);
-
-        self.imgui.io_mut().update_delta_time(now - self.last_frame);
-        self.last_frame = now;
+    pub fn display_ui(&mut self, window: &Window, progress: f32, rp: & mut RenderParameters,
+                      avg_fps:f32, compute_kernel_time: f32, dt: Duration) {
+        self.imgui.io_mut().update_delta_time(dt);
 
         let mut cc = rp.camera_controller().clone();
         let mut fov = cc.vfov_rad().to_degrees();
@@ -127,7 +117,7 @@ impl GUI {
                 cc.move_left(0);
             }
 
-            cc.update_camera(dt);
+            cc.update_camera(dt.as_secs_f32());
 
             {
                 let window = ui.window("Parameters");
@@ -135,8 +125,8 @@ impl GUI {
                     .size([300.0, 300.0], imgui::Condition::FirstUseEver)
                     .build(|| {
                         ui.text(format!(
-                            "Render progress: {:.1} %",
-                            progress * 100.0
+                            "Render progress: {:.1} %  Avg FPS: {:.2}  Avg compute kernel time: {:.2}ns ",
+                            progress * 100.0, avg_fps, compute_kernel_time
                         ));
 
                         ui.separator();
