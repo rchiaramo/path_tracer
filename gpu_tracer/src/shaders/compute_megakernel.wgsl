@@ -427,8 +427,8 @@ fn rngNextVec3InUnitSphere(state: ptr<function, u32>) -> vec3<f32> {
     // probability density is uniformly distributed over r^3
     let r = pow(rngNextFloat(state), 0.33333f);
     // and need to distribute theta according to arccos(U[-1,1])
-    // let theta = acos(2f * rngNextFloat(state) - 1.0);
-    let cosTheta = 2f * rngNextFloat(state) - 1f;
+    // let theta = acos(1.0 - 2f * rngNextFloat(state));
+    let cosTheta = 1f - 2f * rngNextFloat(state);
     let sinTheta = sqrt(1 - cosTheta * cosTheta);
     let phi = 2.0 * PI * rngNextFloat(state);
 
@@ -440,13 +440,13 @@ fn rngNextVec3InUnitSphere(state: ptr<function, u32>) -> vec3<f32> {
 }
 
 fn rngNextUintInRange(state: ptr<function, u32>, min: u32, max: u32) -> u32 {
-    rngNextInt(state);
-    return min + (*state) % (max - min);
+    let next_int = rngNextInt(state);
+    return min + (next_int) % (max - min);
 }
 
 fn rngNextFloat(state: ptr<function, u32>) -> f32 {
-    rngNextInt(state);
-    return f32(*state) * 2.3283064365387e-10f;  // / f32(0xffffffffu - 1f);
+    let next_int = rngNextInt(state);
+    return f32(next_int) * 2.3283064365387e-10f;  // / f32(0xffffffffu - 1f);
 }
 
 fn initRng(pixel: vec2<u32>, resolution: vec2<u32>, frame: u32) -> u32 {
@@ -454,11 +454,33 @@ fn initRng(pixel: vec2<u32>, resolution: vec2<u32>, frame: u32) -> u32 {
     return jenkinsHash(seed);
 }
 
-fn rngNextInt(state: ptr<function, u32>) {
+// I've altered the code I copied to implement what I believe is now a correct
+// PCG-RXS-M-XS; specifically, the state is only based on the LCG
+// rngNextInt will update the state, but then return a rng via the output function
+fn rngNextInt(state: ptr<function, u32>) -> u32 {
     // PCG hash RXS-M-XS
-    let oldState = *state + 747796405u + 2891336453u;
+    let oldState = *state * 747796405u + 2891336453u;
+    *state = oldState;
     let word = ((oldState >> ((oldState >> 28u) + 4u)) ^ oldState) * 277803737u;
-    *state = (word >> 22u) ^ word;
+    return (word >> 22u) ^ word;
+}
+
+fn advance(state: ptr<function, u32>, advance_by: u32) {
+    var acc_mult = 1u;
+    var acc_plus = 0u;
+    var cur_mult = 747796405u;
+    var cur_plus = 2891336453u;
+    var delta = advance_by;
+    while delta > 0 {
+        if delta == 1 {
+            acc_mult *= cur_mult;
+            acc_plus = acc_plus * cur_mult + cur_plus;
+        }
+        cur_plus = (cur_mult + 1u) * cur_plus;
+        cur_mult *= cur_mult;
+        delta = delta >> 1;
+    }
+    *state = *state * acc_mult + acc_plus;
 }
 
 fn jenkinsHash(input: u32) -> u32 {

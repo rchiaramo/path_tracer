@@ -614,20 +614,39 @@ impl GPURNG {
     }
 
     pub fn rngNextUintInRange(&mut self, min: u32, max: u32) -> u32 {
-        self.rngNextInt();
-        return min + (self.state) % (max - min);
+        let x = self.rngNextInt();
+        min + x % (max - min)
     }
 
     pub fn rngNextFloat(&mut self) -> f32 {
-        self.rngNextInt();
-        return self.state as f32 * 2.3283064365387e-10;
+        let x = self.rngNextInt();
+        x as f32 * 2.3283064365387e-10
     }
 
-    pub fn rngNextInt(&mut self) {
+    pub fn rngNextInt(&mut self) -> u32 {
         // PCG hash RXS-M-XS
         let oldState = (self.state.wrapping_mul(747796405)).wrapping_add(2891336453); // LCG
+        self.state = oldState;
         let word = ((oldState >> ((oldState >> 28) + 4)) ^ oldState).wrapping_mul(277803737); // RXS-M
-        self.state = (word >> 22) ^ word; // XS
+        (word >> 22) ^ word // XS
+    }
+
+    fn advance(&mut self, advance_by: u32) {
+        let mut acc_mult = 1u32;
+        let mut acc_plus = 0u32;
+        let mut cur_mult = 747796405u32;
+        let mut cur_plus = 2891336453u32;
+        let mut delta = advance_by;
+        while delta > 0 {
+            if delta == 1 {
+                acc_mult *= cur_mult;
+                acc_plus = acc_plus * cur_mult + cur_plus;
+            }
+            cur_plus = (cur_mult + 1) * cur_plus;
+            cur_mult *= cur_mult;
+            delta = delta >> 1;
+        }
+        self.state = self.state * acc_mult + acc_plus;
     }
 
     fn jenkinsHash(input: u32) -> u32 {
