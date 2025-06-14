@@ -11,21 +11,23 @@ pub struct GUI {
     pub imgui: imgui::Context,
     pub imgui_renderer: Renderer,
     last_cursor: Option<MouseCursor>,
+    pub last_frame: Instant,
 }
 
 impl GUI {
     pub fn new(window: &Window, surface_cap: &SurfaceConfiguration,
                device: &wgpu::Device, queue: &Queue)
-        -> Option<Self> {
-
+               -> Option<Self> {
         let mut imgui = imgui::Context::create();
-        let mut platform = imgui_winit_support::WinitPlatform::init(&mut imgui);
+        let mut platform = WinitPlatform::new(&mut imgui);
         platform.attach_window(
             imgui.io_mut(),
             &window,
             imgui_winit_support::HiDpiMode::Default,
         );
-        imgui.set_ini_filename(std::path::PathBuf::from("imgui.ini"));
+
+        imgui.set_ini_filename(None);
+        // imgui.set_ini_filename(std::path::PathBuf::from("imgui.ini"));
 
         let hidpi_factor = window.scale_factor();
         let font_size = (13.0 * hidpi_factor) as f32;
@@ -45,32 +47,60 @@ impl GUI {
             ..Default::default()
         };
 
-        let mut imgui_renderer = Renderer::new(&mut imgui, &device, &queue, renderer_config);
+        let imgui_renderer = Renderer::new(&mut imgui, &device, &queue, renderer_config);
+        let last_frame = Instant::now();
 
         Some(Self {
             platform,
             imgui,
             imgui_renderer,
             last_cursor: None,
+            last_frame,
         })
     }
 
-    pub fn display_ui(&mut self, window: &Window, progress: f32, rp: & mut RenderParameters,
-                      avg_fps:f32, compute_kernel_time: f32, dt: Duration) {
-        self.imgui.io_mut().update_delta_time(dt);
+    // pub fn display_ui(&mut self, window: &Window, progress: f32, rp: &mut RenderParameters,
+    //                   avg_fps:f32, compute_kernel_time: f32, dt: Duration) {
+    //     let ui = self.imgui.frame();
+    //     self.platform.prepare_render(&ui, &window);
+    //     {
+    //         let window = ui.window("Hello Imgui from WGPU!");
+    //         window
+    //             .size([400.0, 100.0], imgui::Condition::FirstUseEver)
+    //             .position([0.0, 0.0], imgui::Condition::FirstUseEver)
+    //             .build(|| {
+    //                 ui.text(format!(
+    //                     "Avg compute time: {:.3}ms, render progress: {:.1} %",
+    //                     10.0,
+    //                     // fps_counter.average_fps(),
+    //                     0.5 * 100.0
+    //                 ));
+    //                 ui.separator();
+    // 
+    //                 ui.text("Sampling parameters");
+    //                 let mouse_pos = ui.io().mouse_pos;
+    //                 ui.text(format!("Mouse: {:?}", mouse_pos)
+    //                 );
+    //             });
+    //     }
+    // 
+    //     if self.last_cursor != ui.mouse_cursor() {
+    //         self.last_cursor = ui.mouse_cursor();
+    //         self.platform.prepare_render(&ui, &window);
+    //     }
+    // }
 
+    pub fn display_ui(&mut self, window: &Window, progress: f32, rp: &mut RenderParameters,
+                      avg_fps: f32, compute_kernel_time: f32, dt: Duration) {
         let mut cc = rp.camera_controller().clone();
         let mut fov = cc.vfov_rad().to_degrees();
         let (defocus_angle_rad, mut focus_distance) = cc.dof();
         let mut defocus_angle = defocus_angle_rad.to_degrees();
 
+        let ui = self.imgui.frame();
+        self.platform.prepare_render(&ui, &window);
+
         {
-            self.platform
-                .prepare_frame(self.imgui.io_mut(), &window)
-                .expect("WinitPlatform::prepare_frame failed");
-
-            let ui = self.imgui.frame();
-
             // if the right mouse button is held down and we move the mouse, we can orient the camera
             let mouse_down = ui.io().mouse_down;
             if mouse_down[1] {
@@ -177,15 +207,16 @@ impl GUI {
                         );
                     });
             }
-
-            if self.last_cursor != ui.mouse_cursor() {
-                self.last_cursor = ui.mouse_cursor();
-                self.platform.prepare_render(&ui, &window);
-            }
-            cc.set_vfov(fov);
-            cc.set_defocus_angle(defocus_angle);
-            cc.set_focus_distance(focus_distance);
-            rp.update_camera_controller(cc);
         }
+
+        if self.last_cursor != ui.mouse_cursor() {
+            self.last_cursor = ui.mouse_cursor();
+            self.platform.prepare_render(&ui, &window);
+        }
+        cc.set_vfov(fov);
+        cc.set_defocus_angle(defocus_angle);
+        cc.set_focus_distance(focus_distance);
+        rp.update_camera_controller(cc);
     }
+
 }

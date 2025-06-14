@@ -37,7 +37,7 @@ fn main() -> Result<(), EventLoopError> {
                                 100.0,
                                 4.0,
                                 0.1);
-    let screen_size = (960, 540); // (960, 540) (1920, 1080) (2880, 1620) (3840, 2160)
+    let screen_size = (1920, 1080); // (960, 540) (1920, 1080) (2880, 1620) (3840, 2160)
     let sampling_parameters = SamplingParameters::new(1,
                                                       50,
                                                       1,

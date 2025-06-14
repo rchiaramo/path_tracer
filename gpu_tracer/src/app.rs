@@ -1,8 +1,7 @@
-use std::collections::VecDeque;
 use std::sync::Arc;
 use std::time::Instant;
 use winit::application::ApplicationHandler;
-use winit::event::{DeviceEvent, DeviceId, ElementState, KeyEvent, WindowEvent};
+use winit::event::{ElementState, KeyEvent, WindowEvent};
 use winit::event_loop::{ActiveEventLoop};
 use winit::keyboard::{KeyCode, PhysicalKey};
 use winit::window::{Window, WindowId};
@@ -126,12 +125,12 @@ impl ApplicationHandler for App<'_> {
                     self.frames_per_second.update(dt);
                     let avg_fps= self.frames_per_second.get_avg_fps();
                     let kernel_time= self.query_results.get_running_avg();
-                    gui.display_ui(window.as_ref(), path_tracer.progress(), & mut rp, avg_fps, kernel_time, dt);
 
                     path_tracer.update_render_parameters(rp);
                     path_tracer.update_buffers(&state.queue);
                     let mut queries = Queries::new(&state.device, QueryResults::NUM_QUERIES);
                     path_tracer.run_compute_kernel(&state.device, &state.queue, &mut queries);
+                    gui.display_ui(window.as_ref(), path_tracer.progress(), & mut rp, avg_fps, kernel_time, dt);
                     path_tracer.run_display_kernel(
                         &mut state.surface,
                         &state.device,
@@ -143,11 +142,24 @@ impl ApplicationHandler for App<'_> {
                     self.query_results.process_raw_results(&state.queue, raw_results);
                 }
 
-                _ => {}
+                _ => {
+                    let generic_event: winit::event::Event<WindowEvent> = winit::event::Event::WindowEvent {
+                        window_id,
+                        event,
+                    };
+                    gui.platform.handle_event(gui.imgui.io_mut(), &window, &generic_event);
+                    window.request_redraw();
+                },
             }
         }
-        gui.platform.handle_event(gui.imgui.io_mut(), &window, window_id, &event);
-        window.request_redraw();
+    }
+
+    fn about_to_wait(&mut self, _event_loop: &ActiveEventLoop) {
+        let gui = self.gui.as_mut().unwrap();
+        let window = self.window.as_ref().unwrap();
+        gui.platform
+            .prepare_frame(gui.imgui.io_mut(), &window)
+            .expect("WinitPlatform::prepare_frame failed");
     }
 }
 
@@ -170,7 +182,7 @@ impl<'a> WgpuState<'a> {
         };
 
         let instance = wgpu::Instance::new(
-            wgpu::InstanceDescriptor {
+            &wgpu::InstanceDescriptor {
                 backends: wgpu::Backends::PRIMARY,
                 ..Default::default()
             }
@@ -185,7 +197,7 @@ impl<'a> WgpuState<'a> {
                 compatible_surface: Some(&surface),
                 force_fallback_adapter: false,
             }
-        ).await?;
+        ).await.expect("Unable to find a suitable GPU adapter");
 
         // Check timestamp features.
         let features = adapter.features()
@@ -217,8 +229,8 @@ impl<'a> WgpuState<'a> {
                 },
                 label: None,
                 memory_hints: Default::default(),
+                trace: Default::default(),
             },
-            None,
         ).await.unwrap();
 
         let surface_capabilities = surface.get_capabilities(&adapter);
@@ -240,6 +252,8 @@ impl<'a> WgpuState<'a> {
             view_formats: vec![],
             desired_maximum_frame_latency: 1,
         };
+        
+        surface.configure(&device, &surface_config);
 
         Some(Self {
             surface,

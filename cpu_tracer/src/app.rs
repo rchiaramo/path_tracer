@@ -1,9 +1,6 @@
 use crate::gui::GUI;
 use crate::path_tracer::PathTracer;
-use common_code::camera_controller::CameraController;
-use common_code::gpu_structs::{GPUSamplingParameters};
 use common_code::parameters::RenderParameters;
-use common_code::projection_matrix::ProjectionMatrix;
 use common_code::scene::Scene;
 use std::sync::Arc;
 use std::time::Instant;
@@ -87,6 +84,9 @@ impl ApplicationHandler for App<'_> {
         let gui = self.gui.as_mut().unwrap();
         let mut rp = path_tracer.get_render_parameters();
 
+        let now = Instant::now();
+        gui.imgui.io_mut().update_delta_time(now - gui.last_frame);
+        gui.last_frame = now;
 
         if !path_tracer.input(&event) {
             match event {
@@ -108,17 +108,17 @@ impl ApplicationHandler for App<'_> {
                     path_tracer.update_render_parameters(rp);
                 }
 
-                WindowEvent::CursorMoved { position, ..} => {
-                    self.cursor_position = position;
-                }
-
-                // state below is NOT wgpu state as declared above
-                WindowEvent::MouseInput { state, ..
-                } => {
-                    if state.is_pressed() {
-                        println!("cursor position {:?}", self.cursor_position);
-                    }
-                }
+                // WindowEvent::CursorMoved { position, ..} => {
+                //     self.cursor_position = position;
+                // }
+                // 
+                // // state below is NOT wgpu state as declared above
+                // WindowEvent::MouseInput { state, ..
+                // } => {
+                //     if state.is_pressed() {
+                //         println!("cursor position {:?}", self.cursor_position);
+                //     }
+                // }
 
                 WindowEvent::RedrawRequested => {
                     let now = Instant::now();
@@ -127,23 +127,37 @@ impl ApplicationHandler for App<'_> {
                     self.frames_per_second.update(dt);
                     let avg_fps= self.frames_per_second.get_avg_fps();
 
-                    gui.display_ui(window.as_ref(), path_tracer.progress(), & mut rp, avg_fps, 0.0, dt);
                     path_tracer.update_render_parameters(rp);
                     path_tracer.update_buffers(&state.queue);
                     path_tracer.run_compute_kernel(&state.device, &state.queue);
+                    gui.display_ui(&window, path_tracer.progress(), &mut rp, avg_fps, 0.0, dt);
                     path_tracer.run_display_kernel(
                         &mut state.surface,
                         &state.device,
                         &state.queue,
                         gui
                     );
+                    window.request_redraw();
                 }
-                
-                _ => {}
+
+                _ => {
+                    let generic_event: winit::event::Event<WindowEvent> = winit::event::Event::WindowEvent {
+                        window_id,
+                        event,
+                    };
+                    gui.platform.handle_event(gui.imgui.io_mut(), &window, &generic_event);
+                    window.request_redraw();
+                },
             }
         }
-        gui.platform.handle_event(gui.imgui.io_mut(), &window, window_id, &event);
-        window.request_redraw();
+    }
+
+    fn about_to_wait(&mut self, _event_loop: &ActiveEventLoop) {
+        let gui = self.gui.as_mut().unwrap();
+        let window = self.window.as_ref().unwrap();
+        gui.platform
+            .prepare_frame(gui.imgui.io_mut(), &window)
+            .expect("WinitPlatform::prepare_frame failed");
     }
 }
 
@@ -164,14 +178,14 @@ impl<'a> WgpuState<'a> {
             let viewport = window.inner_size();
             (viewport.width, viewport.height)
         };
-
+        
         let instance = wgpu::Instance::new(
-            wgpu::InstanceDescriptor {
+            &wgpu::InstanceDescriptor {
                 backends: wgpu::Backends::PRIMARY,
                 ..Default::default()
             }
         );
-
+        
         let surface = instance.create_surface(
             Arc::clone(&window)).unwrap();
 
@@ -181,7 +195,7 @@ impl<'a> WgpuState<'a> {
                 compatible_surface: Some(&surface),
                 force_fallback_adapter: false,
             }
-        ).await?;
+        ).await.expect("Failed to load adapter");
 
         let (device, queue) = adapter.request_device(
             &wgpu::DeviceDescriptor {
@@ -192,15 +206,20 @@ impl<'a> WgpuState<'a> {
                 },
                 label: None,
                 memory_hints: Default::default(),
+                trace: Default::default(),
             },
-            None,
         ).await.unwrap();
 
         let surface_capabilities = surface.get_capabilities(&adapter);
 
+        let surface_format = surface_capabilities.formats.iter()
+            .find(|f| f.is_srgb())
+            .copied()
+            .unwrap_or(surface_capabilities.formats[0]);
+
         let surface_config = wgpu::SurfaceConfiguration {
             usage: wgpu::TextureUsages::RENDER_ATTACHMENT,
-            format: wgpu::TextureFormat::Bgra8Unorm,
+            format: surface_format, // wgpu::TextureFormat::Bgra8Unorm,
             width: size.0,
             height: size.1,
             present_mode: surface_capabilities.present_modes[0],
@@ -208,7 +227,9 @@ impl<'a> WgpuState<'a> {
             view_formats: vec![],
             desired_maximum_frame_latency: 1,
         };
-
+        
+        surface.configure(&device, &surface_config);
+        
         Some(Self {
             surface,
             surface_config,

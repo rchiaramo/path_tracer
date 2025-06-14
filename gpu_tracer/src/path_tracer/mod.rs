@@ -1,3 +1,4 @@
+use imgui::Context;
 use crate::bvh::BVHTree;
 use crate::gpu_buffer::GPUBuffer;
 use crate::gpu_structs::{GPUSamplingParameters};
@@ -6,7 +7,6 @@ use crate::parameters::{RenderParameters, RenderProgress};
 use crate::projection_matrix::ProjectionMatrix;
 use crate::query_gpu::Queries;
 use crate::scene::Scene;
-use common_code::camera_controller::CameraController;
 use wgpu::{BindGroup, BindGroupDescriptor, BindGroupLayoutDescriptor, BufferAddress, BufferUsages, ComputePassTimestampWrites, Device, Queue, RenderPipeline, ShaderStages, Surface, TextureFormat};
 use winit::event::WindowEvent;
 
@@ -193,7 +193,7 @@ impl PathTracer {
                 label: Some("compute shader pipeline"),
                 layout: Some(&ray_tracer_pipeline_layout),
                 module: &shader,
-                entry_point: "main",
+                entry_point: Some("main"),
                 compilation_options: Default::default(),
                 // PipelineCompilationOptions {
                 //     constants: None, //&id,
@@ -242,13 +242,13 @@ impl PathTracer {
             layout: Some(&display_pipeline_layout),
             vertex: wgpu::VertexState {
                 module: &shader,
-                entry_point: "vs",
+                entry_point: Some("vs"),
                 compilation_options: Default::default(),
                 buffers: &[],
             },
             fragment: Some(wgpu::FragmentState {
                 module: &shader,
-                entry_point: "fs",
+                entry_point: Some("fs"),
                 compilation_options: Default::default(),
                 targets: &[Some(wgpu::ColorTargetState {
                     format: TextureFormat::Bgra8Unorm,
@@ -412,7 +412,27 @@ impl PathTracer {
                 gui.imgui.render(), queue, device, &mut display_pass
             ).expect("failed to render gui");
         }
-        queue.submit(Some(encoder.finish()));
+
+        let mut pass = encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
+            label: Some("UI RenderPass"),
+            color_attachments: &[Some(wgpu::RenderPassColorAttachment {
+                view: &view,
+                resolve_target: None,
+                ops: wgpu::Operations {
+                    load: wgpu::LoadOp::Load,
+                    store: wgpu::StoreOp::Store,
+                },
+            })],
+            depth_stencil_attachment: None,
+            timestamp_writes: None,
+            occlusion_query_set: None,
+        });
+
+        let gui_draw_data = Context::render(&mut gui.imgui);
+        gui.imgui_renderer.render(gui_draw_data, queue, device, &mut pass).expect("Failed to render");
+        drop(pass);
+
+        queue.submit([encoder.finish()]);
         output.present();
     }
 }

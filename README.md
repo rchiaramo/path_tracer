@@ -2,9 +2,8 @@ This is an ongoing development project for a GPU based ray-tracer,
 initially based on Ray Tracing in One Weekend.
 
 The backbone of this project is what I used to call WiW 
-for Wgpu-Imgui-Winit (the frameworks I used to implement this), 
-though the imgui crates needed are on my local machine as imgui hasn't upgraded
-to the latest Winit version as yet.  
+for Wgpu-Imgui-Winit (the frameworks I used to implement this).  I have upgraded
+to the latest version of wpgu, imgui, and winit, and all are working.
 
 I'm currently only rendering the final scene is RTiOW, though I used a BVH implemented
 with the SAH. I'm also trying to clock the megakernel (compute only)
@@ -21,7 +20,7 @@ Progress:
 - updated camera and created camera_controller
 - created common_code directory for better overall code management b/w gpu and cpu tracers
 - updated cpu version of tracer for debugging purposes and added it to workgroup
-- added imgui; local imgui files that I modified at this point
+- added imgui
 - runs samples/frame until total samples/pixel is complete; shows progress in gui
 - changed ray tracing generation algorithm from RTiOW to projection and view matrix based
 - final pixel color has a sqrt taken; need to investigate colors more

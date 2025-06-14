@@ -1,0 +1,631 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="ALL" />
+  </component>
+  <component name="CargoProjects">
+    <cargoProject FILE="$PROJECT_DIR$/Cargo.toml">
+      <package file="$PROJECT_DIR$/common_code">
+        <enabledFeature name="default" />
+      </package>
+      <package file="$PROJECT_DIR$/cpu_tracer">
+        <enabledFeature name="default" />
+      </package>
+      <package file="$PROJECT_DIR$/gpu_tracer">
+        <enabledFeature name="default" />
+      </package>
+    </cargoProject>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="ef3ec781-f970-4234-9a85-f199a6d6a7a8" name="Changes" comment="Added fps and compute shader timing">
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/anstyle-query-7846805634304980/lib-anstyle_query" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/autocfg-3542bd38a9611a66/invoked.timestamp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/autocfg-3542bd38a9611a66/lib-autocfg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/bit-set-b94f7df59b9cbe8d/invoked.timestamp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/bit-set-b94f7df59b9cbe8d/lib-bit_set" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/bit-set-b94f7df59b9cbe8d/lib-bit_set.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/bitflags-9101cb63d2f44fb4/lib-bitflags" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/cc-5cb8970f2799f140/lib-cc.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/cfg_aliases-a70f168b2210c9a4/dep-lib-cfg_aliases" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/cfg_aliases-a70f168b2210c9a4/lib-cfg_aliases.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/cfg_aliases-ebc367c73fac116d/lib-cfg_aliases.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/chlorine-93992f7c73586ce4/lib-chlorine" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/chlorine-93992f7c73586ce4/lib-chlorine.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/codespan-reporting-52f7ae5a65f3cfd4/invoked.timestamp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/colorchoice-d1fde6c8ad1526cd/invoked.timestamp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/core-foundation-fbd09e3af29d3001/lib-core_foundation.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/crossbeam-deque-109919b007776d9c/invoked.timestamp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/crossbeam-deque-109919b007776d9c/lib-crossbeam_deque" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/crossbeam-epoch-08f0df62570fbf0c/invoked.timestamp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/crossbeam-epoch-08f0df62570fbf0c/lib-crossbeam_epoch.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/crossbeam-utils-cc74d00e7227c67d/invoked.timestamp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/crossbeam-utils-cc74d00e7227c67d/lib-crossbeam_utils.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/cursor-icon-9e0dd4a09436f2a8/lib-cursor_icon.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/dispatch-368f7916c1bc6bed/lib-dispatch" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/dpi-304e5eb6e1a0985d/invoked.timestamp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/env_filter-d2340bb298fb260c/invoked.timestamp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/env_filter-d2340bb298fb260c/lib-env_filter.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/equivalent-4d714763eeff33f5/invoked.timestamp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/equivalent-4d714763eeff33f5/lib-equivalent.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/foreign-types-shared-ec00221309a577f4/lib-foreign_types_shared" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/foreign-types-shared-ec00221309a577f4/lib-foreign_types_shared.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/getrandom-f074b2e2ab6073b4/lib-getrandom" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/hexf-parse-4d46db831354d172/lib-hexf_parse" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/humantime-9a3583faa925fd54/invoked.timestamp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/imgui-sys-cc551592b8613484/dep-build-script-build-script-build" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/indexmap-c5c1e9590df8879f/lib-indexmap.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/libc-1c85fbce2505082b/invoked.timestamp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/libc-1c85fbce2505082b/lib-libc.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/libc-d8116e18b7eefbf6/invoked.timestamp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/lock_api-55bc62c9ab8bed67/invoked.timestamp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/lock_api-99de4baec0b027f3/run-build-script-build-script-build.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/lock_api-fb3982eb80503744/invoked.timestamp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/lock_api-fb3982eb80503744/lib-lock_api" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/log-59dbdfa937eb63e3/invoked.timestamp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/log-59dbdfa937eb63e3/lib-log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/mint-5ac99e30839ce5fb/lib-mint" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/objc-4bc098d6e8978be4/lib-objc.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/objc-sys-2d988014247fd44f/lib-objc_sys" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/parking_lot-2820ca2882143690/lib-parking_lot" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/paste-1777eadf9f476b54/invoked.timestamp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/paste-1777eadf9f476b54/lib-paste.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/pin-project-lite-59bfcbd6a33205cc/lib-pin_project_lite.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/proc-macro2-7392d1cb96c8e22b/build-script-build-script-build.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/proc-macro2-7392d1cb96c8e22b/invoked.timestamp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/proc-macro2-f306f1063608b579/dep-lib-proc_macro2" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/proc-macro2-f306f1063608b579/lib-proc_macro2" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/profiling-43c72a4aff915091/invoked.timestamp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/quote-9984aba2ded74661/lib-quote" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/raw-window-handle-7ac0ac534e13e0a0/lib-raw_window_handle" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/rayon-core-96f4ef6fdedbf457/build-script-build-script-build.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/regex-a0e31c7efa38c45a/invoked.timestamp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/regex-automata-8376de0955d53949/lib-regex_automata.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/smallvec-2d73d348b7e5db9b/lib-smallvec" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/termcolor-f79b43d0afbd6a93/lib-termcolor" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/thiserror-da078418b0f8b17b/build-script-build-script-build" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/tracing-9865b6ce4a582d98/lib-tracing" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/unicode-ident-4fa8e70de8323614/dep-lib-unicode_ident" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/unicode-xid-dc86eeb7f54355e8/invoked.timestamp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/utf8parse-06b580c407c33d41/invoked.timestamp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/utf8parse-06b580c407c33d41/lib-utf8parse.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/wgpu-core-e18776773b31665e/build-script-build-script-build" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/wgpu-hal-17fbd0c876077a93/invoked.timestamp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/wgpu-types-00347a0a4dae7b7b/lib-wgpu_types.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/winit-5cbf5668334d1352/build-script-build-script-build" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/winit-61e258d2403ba129/run-build-script-build-script-build" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/build/crossbeam-utils-007fa919155fc983/stderr" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/build/crossbeam-utils-d23618e30d957c3d/build_script_build-d23618e30d957c3d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/build/imgui-sys-cc551592b8613484/build-script-build" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/build/imgui-sys-cc551592b8613484/build_script_build-cc551592b8613484.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/build/libc-d8116e18b7eefbf6/build_script_build-d8116e18b7eefbf6.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/build/lock_api-99de4baec0b027f3/invoked.timestamp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/build/lock_api-99de4baec0b027f3/out/probe0.ll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/build/parking_lot_core-46612722f76262e9/build_script_build-46612722f76262e9.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/build/paste-36fc6a825ce5fc4f/root-output" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/build/proc-macro2-edaa823a5f1dfa3a/invoked.timestamp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/build/proc-macro2-edaa823a5f1dfa3a/out/proc_macro2.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/build/thiserror-6875251e4143663e/out/thiserror.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/build/wgpu-047cacef8b4ace4d/build_script_build-047cacef8b4ace4d.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/build/wgpu-core-6e3dd33700d459a5/output" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/build/winit-5cbf5668334d1352/build-script-build" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/build/winit-5cbf5668334d1352/build_script_build-5cbf5668334d1352.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/build/winit-61e258d2403ba129/stderr" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/deps/autocfg-3542bd38a9611a66.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/deps/cfg_aliases-a70f168b2210c9a4.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/deps/cfg_aliases-ebc367c73fac116d.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/deps/document_features-324275ff8f641660.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/deps/libautocfg-3542bd38a9611a66.rlib" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/deps/libautocfg-3542bd38a9611a66.rmeta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/deps/libcc-5cb8970f2799f140.rlib" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/deps/libcfg_aliases-ebc367c73fac116d.rlib" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/deps/libpaste-1777eadf9f476b54.dylib" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/deps/libproc_macro2-f306f1063608b579.rmeta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/deps/libshlex-bad61c32b5163c64.rlib" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/deps/libsyn-3f2e3264fec7814a.rmeta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/deps/libunicode_ident-4fa8e70de8323614.rlib" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/deps/litrs-d47fe3b28f57b662.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/deps/shlex-bad61c32b5163c64.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/incremental/build_script_build-1t2m8cdz0mv6d/s-gzpyk4fjqc-16xo6p0-5cek0smw9ktee0iiqo617m19p/7103jyn08jnfq96dpovfxzx3s.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/debug/incremental/build_script_build-1t2m8cdz0mv6d/s-gzpyk4fjqc-16xo6p0-5cek0smw9ktee0iiqo617m19p/work-products.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gpu_tracer/src/app.rs" beforeDir="false" afterPath="$PROJECT_DIR$/gpu_tracer/src/app.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gpu_tracer/src/main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/gpu_tracer/src/main.rs" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="RsBuildProfile:dev" />
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Rust File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="better_camera" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;rchiaramo&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/rchiaramo/path_tracer.git&quot;,
+    &quot;accountId&quot;: &quot;17b55632-ea25-44d1-8fa6-4c87f2ab2eb8&quot;
+  }
+}</component>
+  <component name="MacroExpansionManager">
+    <option name="directoryName" value="njwuhn51" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 3
+}</component>
+  <component name="ProjectId" id="2lIXePpu7NTjzcYdPgmCBNMnhSN" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
+    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;Cargo.Run cpu_tracer.executor&quot;: &quot;Debug&quot;,
+    &quot;Cargo.Run gpu_tracer backtrace.executor&quot;: &quot;Run&quot;,
+    &quot;Cargo.Run gpu_tracer.executor&quot;: &quot;Debug&quot;,
+    &quot;Cargo.Run.executor&quot;: &quot;Debug&quot;,
+    &quot;Cargo.Test camera::tests::angles.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.rust.reset.selective.auto.import&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/DrDrRob/Documents/Rust/path_tracer&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;org.rust.cargo.project.model.PROJECT_DISCOVERY&quot;: &quot;true&quot;,
+    &quot;org.rust.cargo.project.model.impl.CargoExternalSystemProjectAware.subscribe.first.balloon&quot;: &quot;&quot;,
+    &quot;org.rust.disableDetachedFileInspection/Users/DrDrRob/Documents/Rust/path_tracer/common_code/frames_per_second.rs&quot;: &quot;true&quot;,
+    &quot;org.rust.disableDetachedFileInspection/Users/DrDrRob/Documents/Rust/path_tracer/common_code/src/initial_conditions.rs&quot;: &quot;true&quot;,
+    &quot;org.rust.first.attach.projects&quot;: &quot;true&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;project.propVCSSupport.DirectoryMappings&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/common_code/shaders" />
+      <recent name="$PROJECT_DIR$/common_code/src" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/common_code/src" />
+      <recent name="$PROJECT_DIR$/shared_stuff/src" />
+      <recent name="$PROJECT_DIR$/gpu_tracer/src" />
+      <recent name="$PROJECT_DIR$/shared_source_files" />
+      <recent name="$PROJECT_DIR$" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Cargo.Run gpu_tracer backtrace">
+    <configuration name="Run cpu_tracer" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="command" value="run --package cpu_tracer --bin cpu_tracer" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <envs />
+      <option name="emulateTerminal" value="true" />
+      <option name="channel" value="DEFAULT" />
+      <option name="requiredFeatures" value="true" />
+      <option name="allFeatures" value="false" />
+      <option name="withSudo" value="false" />
+      <option name="buildTarget" value="REMOTE" />
+      <option name="backtrace" value="SHORT" />
+      <option name="isRedirectInput" value="false" />
+      <option name="redirectInputPath" value="" />
+      <method v="2">
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Run gpu_tracer backtrace" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
+      <option name="command" value="run --package gpu_tracer --bin gpu_tracer" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <envs>
+        <env name="RUST_BACKTRACE" value="full" />
+      </envs>
+      <option name="emulateTerminal" value="true" />
+      <option name="channel" value="DEFAULT" />
+      <option name="requiredFeatures" value="true" />
+      <option name="allFeatures" value="false" />
+      <option name="withSudo" value="false" />
+      <option name="buildTarget" value="REMOTE" />
+      <option name="backtrace" value="SHORT" />
+      <option name="isRedirectInput" value="false" />
+      <option name="redirectInputPath" value="" />
+      <method v="2">
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command" nameIsGenerated="true">
+      <option name="command" value="run" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <envs />
+      <option name="emulateTerminal" value="true" />
+      <option name="channel" value="DEFAULT" />
+      <option name="requiredFeatures" value="true" />
+      <option name="allFeatures" value="false" />
+      <option name="withSudo" value="false" />
+      <option name="buildTarget" value="REMOTE" />
+      <option name="backtrace" value="SHORT" />
+      <option name="isRedirectInput" value="false" />
+      <option name="redirectInputPath" value="" />
+      <method v="2">
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Test camera::tests::angles" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="command" value="test --package common_code --lib camera::tests::angles -- --exact" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <envs />
+      <option name="emulateTerminal" value="true" />
+      <option name="channel" value="DEFAULT" />
+      <option name="requiredFeatures" value="true" />
+      <option name="allFeatures" value="false" />
+      <option name="withSudo" value="false" />
+      <option name="buildTarget" value="REMOTE" />
+      <option name="backtrace" value="SHORT" />
+      <option name="isRedirectInput" value="false" />
+      <option name="redirectInputPath" value="" />
+      <method v="2">
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Test path_tracer" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
+      <option name="command" value="test --workspace" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <envs />
+      <option name="emulateTerminal" value="true" />
+      <option name="channel" value="DEFAULT" />
+      <option name="requiredFeatures" value="true" />
+      <option name="allFeatures" value="false" />
+      <option name="withSudo" value="false" />
+      <option name="buildTarget" value="REMOTE" />
+      <option name="backtrace" value="SHORT" />
+      <option name="isRedirectInput" value="false" />
+      <option name="redirectInputPath" value="" />
+      <method v="2">
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Cargo.Run gpu_tracer backtrace" />
+      <item itemvalue="Cargo.Run" />
+      <item itemvalue="Cargo.Test path_tracer" />
+      <item itemvalue="Cargo.Run cpu_tracer" />
+      <item itemvalue="Cargo.Test camera::tests::angles" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Cargo.Run cpu_tracer" />
+        <item itemvalue="Cargo.Test camera::tests::angles" />
+        <item itemvalue="Cargo.Run cpu_tracer" />
+        <item itemvalue="Cargo.Run cpu_tracer" />
+        <item itemvalue="Cargo.Run cpu_tracer" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="RustProjectSettings">
+    <option name="toolchainHomeDirectory" value="$USER_HOME$/.cargo/bin" />
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="ef3ec781-f970-4234-9a85-f199a6d6a7a8" name="Changes" comment="" />
+      <created>1724868658072</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1724868658072</updated>
+      <workItem from="1724868659115" duration="11593000" />
+      <workItem from="1724882586512" duration="755000" />
+      <workItem from="1724883613948" duration="5045000" />
+      <workItem from="1724960183652" duration="397000" />
+      <workItem from="1724960628348" duration="594000" />
+      <workItem from="1724961597617" duration="39618000" />
+      <workItem from="1725127721574" duration="144000" />
+      <workItem from="1725127877948" duration="932000" />
+      <workItem from="1725128824672" duration="27550000" />
+      <workItem from="1725215684952" duration="42720000" />
+      <workItem from="1725387943879" duration="62000" />
+      <workItem from="1725390263416" duration="922000" />
+      <workItem from="1725732484140" duration="673000" />
+      <workItem from="1726344100555" duration="1596000" />
+      <workItem from="1726453810698" duration="450000" />
+      <workItem from="1726508683365" duration="30000" />
+      <workItem from="1726511186238" duration="437000" />
+      <workItem from="1726830855514" duration="337000" />
+      <workItem from="1726831379913" duration="721000" />
+      <workItem from="1726834960775" duration="137000" />
+      <workItem from="1727098732799" duration="329000" />
+      <workItem from="1730394536947" duration="747000" />
+      <workItem from="1730551534819" duration="238000" />
+      <workItem from="1730933886542" duration="626000" />
+      <workItem from="1731525826353" duration="3000" />
+      <workItem from="1736802969091" duration="1426000" />
+      <workItem from="1738015817513" duration="1118000" />
+      <workItem from="1740427426989" duration="484000" />
+      <workItem from="1740430774774" duration="661000" />
+      <workItem from="1741289910697" duration="600000" />
+      <workItem from="1742996393305" duration="435000" />
+      <workItem from="1743450450850" duration="629000" />
+      <workItem from="1744380800184" duration="5912000" />
+      <workItem from="1745601206746" duration="110000" />
+      <workItem from="1745601456816" duration="3158000" />
+      <workItem from="1748636043463" duration="84000" />
+      <workItem from="1748636264518" duration="2522000" />
+    </task>
+    <task id="LOCAL-00001" summary="Cleaned up path tracer in prep for GUI">
+      <option name="closed" value="true" />
+      <created>1724883053819</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1724883053819</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Cleaned up path tracer in prep for GUI">
+      <option name="closed" value="true" />
+      <created>1724887189460</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1724887189460</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Cleaned up path tracer in prep for GUI">
+      <option name="closed" value="true" />
+      <created>1724963681838</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1724963681838</updated>
+    </task>
+    <task id="LOCAL-00004" summary="added gui; changed ray generation algorithm to used projection and view matrices">
+      <option name="closed" value="true" />
+      <created>1725110670486</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1725110670486</updated>
+    </task>
+    <task id="LOCAL-00005" summary="added gui; changed ray generation algorithm to used projection and view matrices">
+      <option name="closed" value="true" />
+      <created>1725112319654</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1725112319654</updated>
+    </task>
+    <task id="LOCAL-00006" summary="added gui; changed ray generation algorithm to used projection and view matrices">
+      <option name="closed" value="true" />
+      <created>1725128231565</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1725128231566</updated>
+    </task>
+    <task id="LOCAL-00007" summary="added gui; changed ray generation algorithm to used projection and view matrices">
+      <option name="closed" value="true" />
+      <created>1725128435325</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1725128435325</updated>
+    </task>
+    <task id="LOCAL-00008" summary="added gui; changed ray generation algorithm to used projection and view matrices">
+      <option name="closed" value="true" />
+      <created>1725128834584</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1725128834584</updated>
+    </task>
+    <task id="LOCAL-00009" summary="added gui; changed ray generation algorithm to used projection and view matrices">
+      <option name="closed" value="true" />
+      <created>1725129946749</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1725129946749</updated>
+    </task>
+    <task id="LOCAL-00010" summary="added gui; changed ray generation algorithm to used projection and view matrices">
+      <option name="closed" value="true" />
+      <created>1725130758929</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1725130758929</updated>
+    </task>
+    <task id="LOCAL-00011" summary="changing camera structure">
+      <option name="closed" value="true" />
+      <created>1725131462780</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1725131462780</updated>
+    </task>
+    <task id="LOCAL-00012" summary="changing camera structure">
+      <option name="closed" value="true" />
+      <created>1725133251117</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1725133251117</updated>
+    </task>
+    <task id="LOCAL-00013" summary="changed workgroup structure to use common code; gpu works, cpu doesnt'; need to debug camera">
+      <option name="closed" value="true" />
+      <created>1725156367801</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1725156367801</updated>
+    </task>
+    <task id="LOCAL-00014" summary="common code runs; camera broken">
+      <option name="closed" value="true" />
+      <created>1725213059341</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1725213059341</updated>
+    </task>
+    <task id="LOCAL-00015" summary="common code runs; camera broken">
+      <option name="closed" value="true" />
+      <created>1725213508681</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1725213508681</updated>
+    </task>
+    <task id="LOCAL-00016" summary="camera starting to work">
+      <option name="closed" value="true" />
+      <created>1725217317611</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1725217317611</updated>
+    </task>
+    <task id="LOCAL-00017" summary="camera working, time to add controls">
+      <option name="closed" value="true" />
+      <created>1725222930492</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1725222930492</updated>
+    </task>
+    <task id="LOCAL-00018" summary="first controls, need to rework;">
+      <option name="closed" value="true" />
+      <created>1725290403305</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1725290403305</updated>
+    </task>
+    <task id="LOCAL-00019" summary="reworking controls, DOF implemented">
+      <option name="closed" value="true" />
+      <created>1725297649487</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1725297649487</updated>
+    </task>
+    <task id="LOCAL-00020" summary="appear to have fixed resize glitch">
+      <option name="closed" value="true" />
+      <created>1725300141773</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1725300141773</updated>
+    </task>
+    <task id="LOCAL-00021" summary="implemented threaded cpu compute shader">
+      <option name="closed" value="true" />
+      <created>1725318122224</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1725318122224</updated>
+    </task>
+    <task id="LOCAL-00022" summary="implemented threaded cpu compute shader">
+      <option name="closed" value="true" />
+      <created>1725318177059</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1725318177059</updated>
+    </task>
+    <task id="LOCAL-00023" summary="implemented threaded cpu compute shader">
+      <option name="closed" value="true" />
+      <created>1725318538054</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1725318538054</updated>
+    </task>
+    <task id="LOCAL-00024" summary="camera can look around in position">
+      <option name="closed" value="true" />
+      <created>1725323434739</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1725323434739</updated>
+    </task>
+    <task id="LOCAL-00025" summary="movable camera implemented">
+      <option name="closed" value="true" />
+      <created>1725327228197</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1725327228197</updated>
+    </task>
+    <task id="LOCAL-00026" summary="Added fps and compute shader timing">
+      <option name="closed" value="true" />
+      <created>1725387576928</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1725387576928</updated>
+    </task>
+    <task id="LOCAL-00027" summary="Added fps and compute shader timing">
+      <option name="closed" value="true" />
+      <created>1726831122249</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1726831122249</updated>
+    </task>
+    <option name="localTasksCounter" value="28" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+    <ignored-roots>
+      <path value="$PROJECT_DIR$" />
+      <path value="$PROJECT_DIR$/gpu_tracer" />
+    </ignored-roots>
+    <MESSAGE value="Cleaned up path tracer in prep for GUI" />
+    <MESSAGE value="added gui; changed ray generation algorithm to used projection and view matrices" />
+    <MESSAGE value="changing camera structure" />
+    <MESSAGE value="changed workgroup structure to use common code; gpu works, cpu doesnt'; need to debug camera" />
+    <MESSAGE value="common code runs; camera broken" />
+    <MESSAGE value="camera starting to work" />
+    <MESSAGE value="camera working, time to add controls" />
+    <MESSAGE value="first controls, need to rework;" />
+    <MESSAGE value="reworking controls, DOF implemented" />
+    <MESSAGE value="appear to have fixed resize glitch" />
+    <MESSAGE value="implemented threaded cpu compute shader" />
+    <MESSAGE value="camera can look around in position" />
+    <MESSAGE value="movable camera implemented" />
+    <MESSAGE value="Added fps and compute shader timing" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added fps and compute shader timing" />
+  </component>
+</project>
