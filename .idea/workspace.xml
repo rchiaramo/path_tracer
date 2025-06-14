@@ -17,119 +17,7 @@
     </cargoProject>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ef3ec781-f970-4234-9a85-f199a6d6a7a8" name="Changes" comment="Added fps and compute shader timing">
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/anstyle-query-7846805634304980/lib-anstyle_query" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/autocfg-3542bd38a9611a66/invoked.timestamp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/autocfg-3542bd38a9611a66/lib-autocfg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/bit-set-b94f7df59b9cbe8d/invoked.timestamp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/bit-set-b94f7df59b9cbe8d/lib-bit_set" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/bit-set-b94f7df59b9cbe8d/lib-bit_set.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/bitflags-9101cb63d2f44fb4/lib-bitflags" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/cc-5cb8970f2799f140/lib-cc.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/cfg_aliases-a70f168b2210c9a4/dep-lib-cfg_aliases" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/cfg_aliases-a70f168b2210c9a4/lib-cfg_aliases.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/cfg_aliases-ebc367c73fac116d/lib-cfg_aliases.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/chlorine-93992f7c73586ce4/lib-chlorine" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/chlorine-93992f7c73586ce4/lib-chlorine.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/codespan-reporting-52f7ae5a65f3cfd4/invoked.timestamp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/colorchoice-d1fde6c8ad1526cd/invoked.timestamp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/core-foundation-fbd09e3af29d3001/lib-core_foundation.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/crossbeam-deque-109919b007776d9c/invoked.timestamp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/crossbeam-deque-109919b007776d9c/lib-crossbeam_deque" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/crossbeam-epoch-08f0df62570fbf0c/invoked.timestamp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/crossbeam-epoch-08f0df62570fbf0c/lib-crossbeam_epoch.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/crossbeam-utils-cc74d00e7227c67d/invoked.timestamp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/crossbeam-utils-cc74d00e7227c67d/lib-crossbeam_utils.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/cursor-icon-9e0dd4a09436f2a8/lib-cursor_icon.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/dispatch-368f7916c1bc6bed/lib-dispatch" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/dpi-304e5eb6e1a0985d/invoked.timestamp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/env_filter-d2340bb298fb260c/invoked.timestamp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/env_filter-d2340bb298fb260c/lib-env_filter.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/equivalent-4d714763eeff33f5/invoked.timestamp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/equivalent-4d714763eeff33f5/lib-equivalent.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/foreign-types-shared-ec00221309a577f4/lib-foreign_types_shared" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/foreign-types-shared-ec00221309a577f4/lib-foreign_types_shared.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/getrandom-f074b2e2ab6073b4/lib-getrandom" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/hexf-parse-4d46db831354d172/lib-hexf_parse" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/humantime-9a3583faa925fd54/invoked.timestamp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/imgui-sys-cc551592b8613484/dep-build-script-build-script-build" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/indexmap-c5c1e9590df8879f/lib-indexmap.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/libc-1c85fbce2505082b/invoked.timestamp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/libc-1c85fbce2505082b/lib-libc.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/libc-d8116e18b7eefbf6/invoked.timestamp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/lock_api-55bc62c9ab8bed67/invoked.timestamp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/lock_api-99de4baec0b027f3/run-build-script-build-script-build.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/lock_api-fb3982eb80503744/invoked.timestamp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/lock_api-fb3982eb80503744/lib-lock_api" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/log-59dbdfa937eb63e3/invoked.timestamp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/log-59dbdfa937eb63e3/lib-log" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/mint-5ac99e30839ce5fb/lib-mint" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/objc-4bc098d6e8978be4/lib-objc.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/objc-sys-2d988014247fd44f/lib-objc_sys" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/parking_lot-2820ca2882143690/lib-parking_lot" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/paste-1777eadf9f476b54/invoked.timestamp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/paste-1777eadf9f476b54/lib-paste.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/pin-project-lite-59bfcbd6a33205cc/lib-pin_project_lite.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/proc-macro2-7392d1cb96c8e22b/build-script-build-script-build.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/proc-macro2-7392d1cb96c8e22b/invoked.timestamp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/proc-macro2-f306f1063608b579/dep-lib-proc_macro2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/proc-macro2-f306f1063608b579/lib-proc_macro2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/profiling-43c72a4aff915091/invoked.timestamp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/quote-9984aba2ded74661/lib-quote" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/raw-window-handle-7ac0ac534e13e0a0/lib-raw_window_handle" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/rayon-core-96f4ef6fdedbf457/build-script-build-script-build.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/regex-a0e31c7efa38c45a/invoked.timestamp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/regex-automata-8376de0955d53949/lib-regex_automata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/smallvec-2d73d348b7e5db9b/lib-smallvec" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/termcolor-f79b43d0afbd6a93/lib-termcolor" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/thiserror-da078418b0f8b17b/build-script-build-script-build" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/tracing-9865b6ce4a582d98/lib-tracing" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/unicode-ident-4fa8e70de8323614/dep-lib-unicode_ident" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/unicode-xid-dc86eeb7f54355e8/invoked.timestamp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/utf8parse-06b580c407c33d41/invoked.timestamp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/utf8parse-06b580c407c33d41/lib-utf8parse.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/wgpu-core-e18776773b31665e/build-script-build-script-build" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/wgpu-hal-17fbd0c876077a93/invoked.timestamp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/wgpu-types-00347a0a4dae7b7b/lib-wgpu_types.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/winit-5cbf5668334d1352/build-script-build-script-build" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/.fingerprint/winit-61e258d2403ba129/run-build-script-build-script-build" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/build/crossbeam-utils-007fa919155fc983/stderr" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/build/crossbeam-utils-d23618e30d957c3d/build_script_build-d23618e30d957c3d" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/build/imgui-sys-cc551592b8613484/build-script-build" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/build/imgui-sys-cc551592b8613484/build_script_build-cc551592b8613484.d" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/build/libc-d8116e18b7eefbf6/build_script_build-d8116e18b7eefbf6.d" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/build/lock_api-99de4baec0b027f3/invoked.timestamp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/build/lock_api-99de4baec0b027f3/out/probe0.ll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/build/parking_lot_core-46612722f76262e9/build_script_build-46612722f76262e9.d" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/build/paste-36fc6a825ce5fc4f/root-output" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/build/proc-macro2-edaa823a5f1dfa3a/invoked.timestamp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/build/proc-macro2-edaa823a5f1dfa3a/out/proc_macro2.d" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/build/thiserror-6875251e4143663e/out/thiserror.d" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/build/wgpu-047cacef8b4ace4d/build_script_build-047cacef8b4ace4d.d" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/build/wgpu-core-6e3dd33700d459a5/output" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/build/winit-5cbf5668334d1352/build-script-build" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/build/winit-5cbf5668334d1352/build_script_build-5cbf5668334d1352.d" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/build/winit-61e258d2403ba129/stderr" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/deps/autocfg-3542bd38a9611a66.d" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/deps/cfg_aliases-a70f168b2210c9a4.d" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/deps/cfg_aliases-ebc367c73fac116d.d" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/deps/document_features-324275ff8f641660.d" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/deps/libautocfg-3542bd38a9611a66.rlib" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/deps/libautocfg-3542bd38a9611a66.rmeta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/deps/libcc-5cb8970f2799f140.rlib" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/deps/libcfg_aliases-ebc367c73fac116d.rlib" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/deps/libpaste-1777eadf9f476b54.dylib" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/deps/libproc_macro2-f306f1063608b579.rmeta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/deps/libshlex-bad61c32b5163c64.rlib" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/deps/libsyn-3f2e3264fec7814a.rmeta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/deps/libunicode_ident-4fa8e70de8323614.rlib" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/deps/litrs-d47fe3b28f57b662.d" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/deps/shlex-bad61c32b5163c64.d" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/incremental/build_script_build-1t2m8cdz0mv6d/s-gzpyk4fjqc-16xo6p0-5cek0smw9ktee0iiqo617m19p/7103jyn08jnfq96dpovfxzx3s.o" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/debug/incremental/build_script_build-1t2m8cdz0mv6d/s-gzpyk4fjqc-16xo6p0-5cek0smw9ktee0iiqo617m19p/work-products.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gpu_tracer/src/app.rs" beforeDir="false" afterPath="$PROJECT_DIR$/gpu_tracer/src/app.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gpu_tracer/src/main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/gpu_tracer/src/main.rs" afterDir="false" />
-    </list>
+    <list default="true" id="ef3ec781-f970-4234-9a85-f199a6d6a7a8" name="Changes" comment="Added fps and compute shader timing" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -177,35 +65,35 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
-    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;Cargo.Run cpu_tracer.executor&quot;: &quot;Debug&quot;,
-    &quot;Cargo.Run gpu_tracer backtrace.executor&quot;: &quot;Run&quot;,
-    &quot;Cargo.Run gpu_tracer.executor&quot;: &quot;Debug&quot;,
-    &quot;Cargo.Run.executor&quot;: &quot;Debug&quot;,
-    &quot;Cargo.Test camera::tests::angles.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.rust.reset.selective.auto.import&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/DrDrRob/Documents/Rust/path_tracer&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;org.rust.cargo.project.model.PROJECT_DISCOVERY&quot;: &quot;true&quot;,
-    &quot;org.rust.cargo.project.model.impl.CargoExternalSystemProjectAware.subscribe.first.balloon&quot;: &quot;&quot;,
-    &quot;org.rust.disableDetachedFileInspection/Users/DrDrRob/Documents/Rust/path_tracer/common_code/frames_per_second.rs&quot;: &quot;true&quot;,
-    &quot;org.rust.disableDetachedFileInspection/Users/DrDrRob/Documents/Rust/path_tracer/common_code/src/initial_conditions.rs&quot;: &quot;true&quot;,
-    &quot;org.rust.first.attach.projects&quot;: &quot;true&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;project.propVCSSupport.DirectoryMappings&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "Cargo.Run cpu_tracer.executor": "Run",
+    "Cargo.Run gpu_tracer backtrace.executor": "Debug",
+    "Cargo.Run gpu_tracer.executor": "Debug",
+    "Cargo.Run.executor": "Debug",
+    "Cargo.Test camera::tests::angles.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.rust.reset.selective.auto.import": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "main",
+    "last_opened_file_path": "/Users/DrDrRob/Documents/Rust/path_tracer",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "org.rust.cargo.project.model.PROJECT_DISCOVERY": "true",
+    "org.rust.cargo.project.model.impl.CargoExternalSystemProjectAware.subscribe.first.balloon": "",
+    "org.rust.disableDetachedFileInspection/Users/DrDrRob/Documents/Rust/path_tracer/common_code/frames_per_second.rs": "true",
+    "org.rust.disableDetachedFileInspection/Users/DrDrRob/Documents/Rust/path_tracer/common_code/src/initial_conditions.rs": "true",
+    "org.rust.first.attach.projects": "true",
+    "settings.editor.selected.configurable": "project.propVCSSupport.DirectoryMappings",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/common_code/shaders" />
@@ -372,6 +260,7 @@
       <workItem from="1745601456816" duration="3158000" />
       <workItem from="1748636043463" duration="84000" />
       <workItem from="1748636264518" duration="2522000" />
+      <workItem from="1749933194007" duration="7988000" />
     </task>
     <task id="LOCAL-00001" summary="Cleaned up path tracer in prep for GUI">
       <option name="closed" value="true" />
