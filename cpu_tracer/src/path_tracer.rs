@@ -298,7 +298,7 @@ impl PathTracer {
             timestamp_writes: None,
             occlusion_query_set: None,
         });
-
+        
         let gui_draw_data = Context::render(&mut gui.imgui);
         gui.imgui_renderer.render(gui_draw_data, queue, device, &mut pass).expect("Failed to render");
         drop(pass);

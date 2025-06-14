@@ -106,17 +106,17 @@ impl ApplicationHandler for App<'_> {
                     path_tracer.update_render_parameters(rp);
                 }
                 
-                WindowEvent::CursorMoved { position, ..} => {
-                    self.cursor_position = position;
-                }
-
-                // state below is NOT wgpu state as declared above
-                WindowEvent::MouseInput { state, ..
-                } => {
-                    if state.is_pressed() {
-                        println!("cursor position {:?}", self.cursor_position);
-                    }
-                }
+                // WindowEvent::CursorMoved { position, ..} => {
+                //     self.cursor_position = position;
+                // }
+                // 
+                // // state below is NOT wgpu state as declared above
+                // WindowEvent::MouseInput { state, ..
+                // } => {
+                //     if state.is_pressed() {
+                //         println!("cursor position {:?}", self.cursor_position);
+                //     }
+                // }
 
                 WindowEvent::RedrawRequested => {
                     let now = Instant::now();
@@ -126,17 +126,18 @@ impl ApplicationHandler for App<'_> {
                     let avg_fps= self.frames_per_second.get_avg_fps();
                     let kernel_time= self.query_results.get_running_avg();
 
+                    gui.display_ui(window.as_ref(), path_tracer.progress(), & mut rp, avg_fps, kernel_time, dt);
                     path_tracer.update_render_parameters(rp);
                     path_tracer.update_buffers(&state.queue);
                     let mut queries = Queries::new(&state.device, QueryResults::NUM_QUERIES);
                     path_tracer.run_compute_kernel(&state.device, &state.queue, &mut queries);
-                    gui.display_ui(window.as_ref(), path_tracer.progress(), & mut rp, avg_fps, kernel_time, dt);
                     path_tracer.run_display_kernel(
                         &mut state.surface,
                         &state.device,
                         &state.queue,
                         gui
                     );
+                    window.request_redraw();
                     let raw_results = queries.wait_for_results(&state.device);
                     // println!("Raw timestamp buffer contents: {:?}", &raw_results);
                     self.query_results.process_raw_results(&state.queue, raw_results);

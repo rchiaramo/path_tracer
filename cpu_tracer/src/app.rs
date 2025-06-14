@@ -127,10 +127,10 @@ impl ApplicationHandler for App<'_> {
                     self.frames_per_second.update(dt);
                     let avg_fps= self.frames_per_second.get_avg_fps();
 
+                    gui.display_ui(&window, path_tracer.progress(), &mut rp, avg_fps, 0.0, dt);
                     path_tracer.update_render_parameters(rp);
                     path_tracer.update_buffers(&state.queue);
                     path_tracer.run_compute_kernel(&state.device, &state.queue);
-                    gui.display_ui(&window, path_tracer.progress(), &mut rp, avg_fps, 0.0, dt);
                     path_tracer.run_display_kernel(
                         &mut state.surface,
                         &state.device,
